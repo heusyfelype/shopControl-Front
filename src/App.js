@@ -3,6 +3,7 @@ import UserContext from './context/UserContext';
 import SignIn from './pages/SignIn';
 import { useState } from 'react';
 import Signup from './pages/SignUp';
+import Home from './pages/Home';
 
 export default function App() {
   const [userData, setUserData] = useState(JSON.parse(localStorage.getItem("userData")));
@@ -13,6 +14,7 @@ export default function App() {
         <Routes>
           <Route path='/' element={<SignIn />} />
           <Route path='/signup' element={<Signup />} />
+          <Route path='/home' element={<Home />} />
         </Routes>
       </BrowserRouter>
     </UserContext.Provider>
