@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import logo_horizontal from "../assets/logo-horizontal.png"
 
 export default function SignUp() {
     const navigate = useNavigate()
@@ -29,7 +30,7 @@ export default function SignUp() {
     return (
         <Styled_Container>
             <Styled_Box>
-                <h1>controlShop</h1>
+                <img src={logo_horizontal} alt="" />
                 <form onSubmit={(e) => {
                     createUser(e)
                 }}>
@@ -87,7 +88,8 @@ const Styled_Box = styled.div`
     align-items: center;
     justify-content: space-between;
 
-    h1{
+    img{
+        width: 60%;
         padding: 30px 0px;
         font-size: xx-large;
         font-weight: 700;

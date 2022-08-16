@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import logo_principal from "../assets/logo-principal.png";
 
 export default function SignIn() {
     const navigate = useNavigate()
@@ -29,7 +30,7 @@ export default function SignIn() {
     return (
         <Styled_Container>
             <Styled_Box>
-                <h1>controlShop</h1>
+                <img src={logo_principal} alt="" />
                 <form onSubmit={(e) => {
                     getToken(e)
                 }}>
@@ -81,7 +82,8 @@ const Styled_Box = styled.div`
     align-items: center;
     justify-content: space-between;
 
-    h1{
+    img{
+        width: 80%;
         padding: 30px 0px;
         font-size: xx-large;
         font-weight: 700;
