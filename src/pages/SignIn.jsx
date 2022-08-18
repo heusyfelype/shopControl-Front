@@ -3,7 +3,7 @@ import UserContext from "../context/UserContext";
 import { useContext } from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
+import api from "../api";
 import { useNavigate } from "react-router-dom";
 import logo_principal from "../assets/logo-principal.png";
 
@@ -14,10 +14,10 @@ export default function SignIn() {
         email: "",
         password: ""
     })
-
+    
     function getToken(e) {
         e.preventDefault();
-        let req = axios.post("http://localhost:5000/signin", inputState)
+        let req = api.post(`/signin`, inputState)
         req.then((res) => {
             const { data } = res
             setUserData(data)
@@ -28,8 +28,8 @@ export default function SignIn() {
         })
     }
     return (
-        <Styled_Container>
-            <Styled_Box>
+        <StyledContainer>
+            <StyledBox>
                 <img src={logo_principal} alt="" />
                 <form onSubmit={(e) => {
                     getToken(e)
@@ -48,15 +48,15 @@ export default function SignIn() {
                         }} />
                     <button type="submit"> Entrar </button>
                 </form>
-            </Styled_Box>
+            </StyledBox>
             <Link to="/signup">
                 Ainda não tem conta?
             </Link>
-        </Styled_Container>
+        </StyledContainer>
     )
 }
 
-const Styled_Container = styled.div`
+const StyledContainer = styled.div`
     width: 100vw;
     min-height: 100vh;
     background: rgb(248,250,248);
@@ -73,7 +73,7 @@ const Styled_Container = styled.div`
     }
 `
 
-const Styled_Box = styled.div`
+const StyledBox = styled.div`
     width: 80%;
     max-width: 500px;
     height: 75vh;

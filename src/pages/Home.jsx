@@ -1,6 +1,6 @@
-import { useContext } from "react"
-import UserContext from "../context/UserContext"
-import { Link, useNavigate } from "react-router-dom";
+// import { useContext } from "react"
+// import UserContext from "../context/UserContext"
+import {  useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { Icon } from '@iconify/react';
 import Header from "./Header";
@@ -8,11 +8,11 @@ import Footer from "./Footer";
 
 export default function Home() {
     const navigate = useNavigate();
-    const { userData } = useContext(UserContext);
+    // const { userData } = useContext(UserContext);
     return (
-        <Styled_Container>
+        <StyledContainer>
             <Header/>
-            <Styled_Box>
+            <StyledBox>
                 <ul>
                     <li onClick={() => { navigate("/history") }}>
                         <p >
@@ -39,14 +39,14 @@ export default function Home() {
                         <Icon className="styledIcon" icon="fluent:arrow-trending-lines-20-filled" />
                     </li>
                 </ul>
-            </Styled_Box>
+            </StyledBox>
             <Footer/>
-        </Styled_Container>
+        </StyledContainer>
 
     )
 }
 
-const Styled_Container = styled.div`
+const StyledContainer = styled.div`
     width: 100vw;
     min-height: 100vh;
     background: rgb(248,250,248);
@@ -59,7 +59,7 @@ const Styled_Container = styled.div`
 
 `
 
-const Styled_Box = styled.div`
+const StyledBox = styled.div`
     width: 80%;
     max-width: 500px;
     /* height: 75vh; */

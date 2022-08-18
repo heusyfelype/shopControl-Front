@@ -1,11 +1,9 @@
 import styled from "styled-components";
-import UserContext from "../context/UserContext";
-import { useContext } from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import logo_horizontal from "../assets/logo-horizontal.png"
+import api from "../api";
 
 export default function SignUp() {
     const navigate = useNavigate()
@@ -18,9 +16,9 @@ export default function SignUp() {
 
     function createUser(e) {
         e.preventDefault();
-        let req = axios.post("http://localhost:5000/signup", inputState)
+        let req = api.post("/signup", inputState)
         req.then((res) => {
-            const { data } = res
+            // const { data } = res
             navigate("/")
         })
         req.catch((e) => {
@@ -28,8 +26,8 @@ export default function SignUp() {
         })
     }
     return (
-        <Styled_Container>
-            <Styled_Box>
+        <StyledContainer>
+            <StyledBox>
                 <img src={logo_horizontal} alt="" />
                 <form onSubmit={(e) => {
                     createUser(e)
@@ -54,15 +52,15 @@ export default function SignUp() {
                         }} />
                     <button type="submit"> Registrar </button>
                 </form>
-            </Styled_Box>
+            </StyledBox>
             <Link to="/">
                 Já possui conta?
             </Link>
-        </Styled_Container>
+        </StyledContainer>
     )
 }
 
-const Styled_Container = styled.div`
+const StyledContainer = styled.div`
     width: 100vw;
     min-height: 100vh;
     background: rgb(248,250,248);
@@ -79,7 +77,7 @@ const Styled_Container = styled.div`
     }
 `
 
-const Styled_Box = styled.div`
+const StyledBox = styled.div`
     width: 80%;
     max-width: 500px;
     height: 75vh;

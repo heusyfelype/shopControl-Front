@@ -10,7 +10,7 @@ export default function Footer() {
 
     if (location.pathname === "/home") {
         return (
-            <StyledFooter onClick={() => { navigate("/home") }}>
+            <StyledFooter onClick={() => { navigate("/buying") }}>
                 <div>
                     <p> Iniciar compra </p>
                     <Icon className="styledIcon" icon="bx:right-arrow" />
@@ -50,6 +50,10 @@ const StyledFooter = styled.footer`
         font-size: xx-large;
         color: white;
         margin-left: 30px;
+    }
+
+    p, .styledIcon{
+        cursor: pointer;
     }
 
 `
