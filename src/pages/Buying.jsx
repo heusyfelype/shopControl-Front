@@ -27,7 +27,7 @@ const arrTest = [{
     "price": 390,
     "qtt": 1
 }, {
-    "id": 4,
+    "id": 3,
     "userId": 2,
     "statusText": "default",
     "nameText": "macarrão integral",
@@ -37,7 +37,7 @@ const arrTest = [{
     "price": 390,
     "qtt": 1
 }, {
-    "id": 5,
+    "id": 4,
     "userId": 2,
     "statusText": "default",
     "nameText": "macarrão instantâneo",
@@ -54,14 +54,16 @@ export default function Buying() {
     const dragOverItem = useRef();
     const [list, setList] = useState(arrTest);
 
+    // console.log("LIST:: ", list)
+
     const dragStart = (e, position) => {
         dragItem.current = position;
-        console.log(e.target.innerHTML);
+        console.log(e.target.innerHTML, "start Position: ", position);
     };
 
     const dragEnter = (e, position) => {
         dragOverItem.current = position;
-        console.log(e.target.innerHTML);
+         console.log(e.target.innerHTML, "enter Position: ", position);
     };
 
     const drop = (e) => {
@@ -71,10 +73,11 @@ export default function Buying() {
         copyListItems.splice(dragOverItem.current, 0, dragItemContent);
         dragItem.current = null;
         dragOverItem.current = null;
-        setList(copyListItems);
+        console.log("copyListItems: ", copyListItems)
+        setList([...copyListItems]);
     };
 
-
+    // const inputRef = useRef();
     return (
         <StyledContainer>
             <Header />
@@ -82,8 +85,20 @@ export default function Buying() {
                 <Navbar />
                 <ul className="items">
                     {list.map((item, index) => {
+                        // if (index === (list.length - 1) && item.nameText === "") {
+                        //     return (
+                        //         <li key={index}
+                        //             onDragStart={(e) => dragStart(e, index)}
+                        //             onDragEnter={(e) => dragEnter(e, index)}
+                        //             onDragEnd={drop}
+                        //             draggable>
+
+                        //             <EachItem item={item} />
+                        //         </li>
+                        //     )
+                        // }
                         return (
-                            <li key={index}
+                            <li key={item.id}
                                 onDragStart={(e) => dragStart(e, index)}
                                 onDragEnter={(e) => dragEnter(e, index)}
                                 onDragEnd={drop}
@@ -93,6 +108,21 @@ export default function Buying() {
                             </li>
                         )
                     })}
+                    {/* <li onClick={() => {
+                        setList([...list, {
+                            "id": null,
+                            "userId": 2,
+                            "statusText": "default",
+                            "nameText": "",
+                            "brandText": "",
+                            "vol": 0,
+                            "unitText": "g",
+                            "price": 0,
+                            "qtt": 0
+                        }])
+                    }}>
+                        aqui
+                    </li> */}
                 </ul>
             </StyledBox>
             <Footer />
@@ -102,7 +132,7 @@ export default function Buying() {
 }
 
 function EachItem({ item }) {
-    console.log(item)
+    // console.log(item)
     const arrCheckBox = [<Icon className="icon icon-green" icon='bi:check-square-fill' />, <Icon className="icon icon-red" icon="bi:x-square-fill" />, <Icon className="icon icon-gray" icon='bi:check-square-fill' />]
     const [iconState, setIconState] = useState(0)
     const [itemState, setItemState] = useState(item)
@@ -114,10 +144,27 @@ function EachItem({ item }) {
                 }}>
                     {arrCheckBox[iconState]}
                 </div>
-                <input className="input-item" type="text" value={item.nameText} />
-                <input className="input-brand" type="text" value={item.brandText} />
+                <input className="input-item"
+                    type="text"
+                    value={itemState.nameText}
+                    onChange={(e) => {
+                        setItemState({ ...itemState, nameText: e.target.value })
+                    }}
+                />
+                <input className="input-brand"
+                    type="text"
+                    value={itemState.brandText}
+                    onChange={(e) => {
+                        setItemState({ ...itemState, brandText: e.target.value })
+                    }}
+                />
                 <div className="div-vol">
-                    <input className="input-vol" type="text" placeholder="0" />
+                    <input className="input-vol"
+                        type="text"
+                        value={itemState.vol}
+                        onChange={(e) => {
+                            setItemState({ ...itemState, vol: e.target.value })
+                        }} />
                     <select name="unit">
                         <option value="g">g</option>
                         <option value="ml">ml</option>
@@ -125,10 +172,21 @@ function EachItem({ item }) {
                         <option value="L">L</option>
                     </select>
                 </div>
-                <input className="input-qtd" type="text" placeholder="0" />
+                <input className="input-qtd"
+                    type="text"
+                    value={itemState.qtt}
+                    onChange={(e) => {
+                        setItemState({ ...itemState, qtt: e.target.value })
+                    }}
+                />
                 <div className="div-price">
                     R$
-                    <input className="input-price" type="text" placeholder="0,00" />
+                    <input className="input-price"
+                        type="text"
+                        value={itemState.price}
+                        onChange={(e) => {
+                            setItemState({ ...itemState, price: e.target.value })
+                        }} />
 
                 </div>
                 <div className="div-icon-x">
@@ -172,6 +230,7 @@ const StyledBox = styled.div`
         background-color: rgb(255, 255, 255);
         border-bottom: 1px solid rgba(150,150,150,0.5);
         padding: 20px 0px;
+        cursor: pointer;
     }
 `
 
