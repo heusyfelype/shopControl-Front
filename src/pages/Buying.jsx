@@ -1,9 +1,10 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import Footer from "./Footer";
 import Header from "./Header";
 import Navbar from "./Navbar";
 import { Icon } from "@iconify/react";
+import api from "../api";
 
 
 const arrTest = [{
@@ -50,11 +51,31 @@ const arrTest = [{
 
 export default function Buying() {
 
+    const token = localStorage.getItem(process.env.REACT_APP_USR_DATA)
+
     const dragItem = useRef();
     const dragOverItem = useRef();
     const [list, setList] = useState(arrTest);
+    // const [total, setTotal] = useState(0)
+    // console.log("TOTAL", total)
 
-    // console.log("LIST:: ", list)
+    useEffect(() => {
+
+        const config = {
+            headers: {
+                authorization: token
+            }
+        }
+        let req = api.get(`/buying`, config)
+        req.then((res) => {
+            const { data } = res
+            setList([...data]);
+            // setTotal(list.reduce((accum, curr) =>{return (accum.price + curr.price)}))
+        })
+        req.catch((e) => {
+            console.log("Erro: ", e)
+        })
+    }, [])
 
     const dragStart = (e, position) => {
         dragItem.current = position;
@@ -63,7 +84,7 @@ export default function Buying() {
 
     const dragEnter = (e, position) => {
         dragOverItem.current = position;
-         console.log(e.target.innerHTML, "enter Position: ", position);
+        console.log(e.target.innerHTML, "enter Position: ", position);
     };
 
     const drop = (e) => {
@@ -77,26 +98,18 @@ export default function Buying() {
         setList([...copyListItems]);
     };
 
-    // const inputRef = useRef();
+    const inputReference = useRef();
+
     return (
         <StyledContainer>
             <Header />
             <StyledBox>
+                <div>
+                    Total: R$
+                </div>
                 <Navbar />
                 <ul className="items">
                     {list.map((item, index) => {
-                        // if (index === (list.length - 1) && item.nameText === "") {
-                        //     return (
-                        //         <li key={index}
-                        //             onDragStart={(e) => dragStart(e, index)}
-                        //             onDragEnter={(e) => dragEnter(e, index)}
-                        //             onDragEnd={drop}
-                        //             draggable>
-
-                        //             <EachItem item={item} />
-                        //         </li>
-                        //     )
-                        // }
                         return (
                             <li key={item.id}
                                 onDragStart={(e) => dragStart(e, index)}
@@ -104,25 +117,30 @@ export default function Buying() {
                                 onDragEnd={drop}
                                 draggable>
 
-                                <EachItem item={item} />
+                                <EachItem item={item} inputReference={inputReference} />
                             </li>
                         )
                     })}
-                    {/* <li onClick={() => {
-                        setList([...list, {
-                            "id": null,
-                            "userId": 2,
-                            "statusText": "default",
-                            "nameText": "",
-                            "brandText": "",
-                            "vol": 0,
-                            "unitText": "g",
-                            "price": 0,
-                            "qtt": 0
-                        }])
-                    }}>
-                        aqui
-                    </li> */}
+                    <li className="new-item"
+                        onClick={() => {
+                            setList([...list, {
+                                "id": null,
+                                "userId": 2,
+                                "statusText": "default",
+                                "nameText": "",
+                                "brandText": "",
+                                "vol": 0,
+                                "unitText": "g",
+                                "price": 0,
+                                "qtt": 0
+                            }]);
+                            // setTimeout(() =>{
+                            //     inputReference.current.focus();
+
+                            // }, 1000)
+                        }}>
+                        Inclua um novo item
+                    </li>
                 </ul>
             </StyledBox>
             <Footer />
@@ -131,11 +149,19 @@ export default function Buying() {
     )
 }
 
-function EachItem({ item }) {
+function EachItem({ item, inputReference }) {
     // console.log(item)
     const arrCheckBox = [<Icon className="icon icon-green" icon='bi:check-square-fill' />, <Icon className="icon icon-red" icon="bi:x-square-fill" />, <Icon className="icon icon-gray" icon='bi:check-square-fill' />]
     const [iconState, setIconState] = useState(0)
     const [itemState, setItemState] = useState(item)
+    if (itemState.nameText === "") {
+        setTimeout(() => {
+            inputReference.current.focus();
+        }, 150)
+    }
+
+    const convertedPrice = (itemState.price / 100).toFixed(2)
+
     return (
         <StyledItem>
             <form>
@@ -144,13 +170,25 @@ function EachItem({ item }) {
                 }}>
                     {arrCheckBox[iconState]}
                 </div>
-                <input className="input-item"
-                    type="text"
-                    value={itemState.nameText}
-                    onChange={(e) => {
-                        setItemState({ ...itemState, nameText: e.target.value })
-                    }}
-                />
+                {
+                    itemState.nameText === "" ?
+                        <input className="input-item"
+                            type="text"
+                            value={itemState.nameText}
+                            onChange={(e) => {
+                                setItemState({ ...itemState, nameText: e.target.value })
+                            }}
+                            ref={inputReference}
+                        />
+                        : <input className="input-item"
+                            type="text"
+                            value={itemState.nameText}
+                            onChange={(e) => {
+                                setItemState({ ...itemState, nameText: e.target.value })
+                            }}
+                        />
+                }
+
                 <input className="input-brand"
                     type="text"
                     value={itemState.brandText}
@@ -183,9 +221,9 @@ function EachItem({ item }) {
                     R$
                     <input className="input-price"
                         type="text"
-                        value={itemState.price}
+                        value={convertedPrice.toString().replace(".", ",")}
                         onChange={(e) => {
-                            setItemState({ ...itemState, price: e.target.value })
+                            setItemState({ ...itemState, price: parseInt(e.target.value.replace(",", "")) })
                         }} />
 
                 </div>
@@ -220,10 +258,18 @@ const StyledBox = styled.div`
     width: 90%;
     max-width: 1000px;
     overflow-x: scroll;
+    position: relative;
+
+    > div{
+        
+    }
 
     ul{
         display: flex;
         flex-direction: column;
+        min-width: 930px;
+        max-height: 58vh;
+        overflow-y: scroll;
     }
 
     ul li{
@@ -231,6 +277,10 @@ const StyledBox = styled.div`
         border-bottom: 1px solid rgba(150,150,150,0.5);
         padding: 20px 0px;
         cursor: pointer;
+    }
+
+    ul .new-item{
+        padding-left: 10%;
     }
 `
 

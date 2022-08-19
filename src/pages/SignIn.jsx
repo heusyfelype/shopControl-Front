@@ -14,12 +14,13 @@ export default function SignIn() {
         email: "",
         password: ""
     })
-    
+
     function getToken(e) {
         e.preventDefault();
         let req = api.post(`/signin`, inputState)
         req.then((res) => {
             const { data } = res
+            localStorage.setItem(process.env.REACT_APP_USR_DATA, data.token)
             setUserData(data)
             navigate("/home")
         })

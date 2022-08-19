@@ -16,7 +16,7 @@ export default function Navbar() {
 
 const StyledNav = styled.nav`
     width: 100%;
-    min-width: 800px;
+    min-width: 930px;
     display: flex;
     flex-wrap: nowrap;
     align-items: center;
