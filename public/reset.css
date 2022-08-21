@@ -1,4 +1,7 @@
 *{box-sizing: border-box;}
+
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 a, abbr, acronym, address, big, cite, code,
@@ -16,8 +19,17 @@ time, mark, audio, video {
 	padding: 0;
 	border: 0;
 	font-size: 100%;
-	font: inherit;
+    font-family: 'Ubuntu', sans-serif;
 	vertical-align: baseline;
+}
+
+input{
+	font-family: 'Ubuntu', sans-serif;
+
+	
+}
+input::content{
+	font-family: 'Ubuntu', sans-serif;
 }
 /* HTML5 display-role reset for older browsers */
 article, aside, details, figcaption, figure, 

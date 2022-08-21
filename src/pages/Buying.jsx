@@ -5,86 +5,35 @@ import Header from "./Header";
 import Navbar from "./Navbar";
 import { Icon } from "@iconify/react";
 import api from "../api";
+import { EachItem } from "./EachItem";
+// import { useNavigate } from "react-router-dom";
 
-
-const arrTest = [{
-    "id": 1,
-    "userId": 2,
-    "statusText": "default",
-    "nameText": "macarrão editado",
-    "brandText": "Galo",
-    "vol": 500,
-    "unitText": "g",
-    "price": 390,
-    "qtt": 1
-}, {
-    "id": 2,
-    "userId": 2,
-    "statusText": "default",
-    "nameText": "macarrão",
-    "brandText": "Galo",
-    "vol": 500,
-    "unitText": "g",
-    "price": 390,
-    "qtt": 1
-}, {
-    "id": 3,
-    "userId": 2,
-    "statusText": "default",
-    "nameText": "macarrão integral",
-    "brandText": "Galo",
-    "vol": 500,
-    "unitText": "g",
-    "price": 390,
-    "qtt": 1
-}, {
-    "id": 4,
-    "userId": 2,
-    "statusText": "default",
-    "nameText": "macarrão instantâneo",
-    "brandText": "Galo",
-    "vol": 500,
-    "unitText": "g",
-    "price": 390,
-    "qtt": 1
-}]
+const arrTest = []
 
 export default function Buying() {
-
-    const token = localStorage.getItem(process.env.REACT_APP_USR_DATA)
+    // const navigate = useNavigate();
+    const token = localStorage.getItem(process.env.REACT_APP_USR_DATA);
 
     const dragItem = useRef();
     const dragOverItem = useRef();
     const [list, setList] = useState(arrTest);
+    const [total, setTotal] = useState(0);
     // const [total, setTotal] = useState(0)
     // console.log("TOTAL", total)
+    // console.log(list)
 
     useEffect(() => {
-
-        const config = {
-            headers: {
-                authorization: token
-            }
-        }
-        let req = api.get(`/buying`, config)
-        req.then((res) => {
-            const { data } = res
-            setList([...data]);
-            // setTotal(list.reduce((accum, curr) =>{return (accum.price + curr.price)}))
-        })
-        req.catch((e) => {
-            console.log("Erro: ", e)
-        })
-    }, [])
+        getItems(token, setList, setTotal);
+    }, [token])
 
     const dragStart = (e, position) => {
         dragItem.current = position;
-        console.log(e.target.innerHTML, "start Position: ", position);
+        // console.log(e.target.innerHTML, "start Position: ", position);
     };
 
     const dragEnter = (e, position) => {
         dragOverItem.current = position;
-        console.log(e.target.innerHTML, "enter Position: ", position);
+        // console.log(e.target.innerHTML, "enter Position: ", position);
     };
 
     const drop = (e) => {
@@ -92,10 +41,12 @@ export default function Buying() {
         const dragItemContent = copyListItems[dragItem.current];
         copyListItems.splice(dragItem.current, 1);
         copyListItems.splice(dragOverItem.current, 0, dragItemContent);
+        copyListItems.map((item, index) => {
+            return { ...item, positionIndex: index }
+        })
         dragItem.current = null;
         dragOverItem.current = null;
-        console.log("copyListItems: ", copyListItems)
-        setList([...copyListItems]);
+        updateMany(token, copyListItems, setList, setTotal)
     };
 
     const inputReference = useRef();
@@ -103,144 +54,125 @@ export default function Buying() {
     return (
         <StyledContainer>
             <Header />
+            <StyledTotal>
+                Total: R$ <p> {(total / 100).toFixed(2).replace(".", ",")} </p>
+            </StyledTotal>
             <StyledBox>
-                <div>
-                    Total: R$
-                </div>
                 <Navbar />
                 <ul className="items">
-                    {list.map((item, index) => {
+                    {list.length > 0 ? list.map((item, index) => {
                         return (
-                            <li key={item.id}
+                            <li key={`${item.id} + ${index} + ${item.statusText}`}
                                 onDragStart={(e) => dragStart(e, index)}
                                 onDragEnter={(e) => dragEnter(e, index)}
                                 onDragEnd={drop}
-                                draggable>
-
-                                <EachItem item={item} inputReference={inputReference} />
+                                draggable
+                            >
+                                <EachItem item={item} inputReference={inputReference} setList={setList} list={list} setTotal={setTotal} />
                             </li>
                         )
-                    })}
+                    }) : ""}
                     <li className="new-item"
                         onClick={() => {
-                            setList([...list, {
-                                "id": null,
-                                "userId": 2,
-                                "statusText": "default",
-                                "nameText": "",
-                                "brandText": "",
-                                "vol": 0,
-                                "unitText": "g",
-                                "price": 0,
-                                "qtt": 0
-                            }]);
-                            // setTimeout(() =>{
-                            //     inputReference.current.focus();
-
-                            // }, 1000)
+                            sendNewItem(token, setList, list, setTotal)
                         }}>
                         Inclua um novo item
                     </li>
                 </ul>
             </StyledBox>
+            <StyledCancel onClick={async () => {
+                try {
+                    await deleteMany(token);
+                    getItems(token, setList, setTotal);
+                } catch (e) {
+                    console.log(e)
+                }
+            }}>
+                <Icon className="trash-icon" icon="ion:trash-bin-sharp" />
+            </StyledCancel>
             <Footer />
         </StyledContainer>
 
     )
 }
 
-function EachItem({ item, inputReference }) {
-    // console.log(item)
-    const arrCheckBox = [<Icon className="icon icon-green" icon='bi:check-square-fill' />, <Icon className="icon icon-red" icon="bi:x-square-fill" />, <Icon className="icon icon-gray" icon='bi:check-square-fill' />]
-    const [iconState, setIconState] = useState(0)
-    const [itemState, setItemState] = useState(item)
-    if (itemState.nameText === "") {
-        setTimeout(() => {
-            inputReference.current.focus();
-        }, 150)
+export async function deleteMany(token) {
+    const config = {
+        headers: {
+            authorization: token
+        }
+    }
+    let req = api.delete(`/buying/deleteAll`, config)
+    req.then((res) => { })
+    req.catch((e) => { })
+}
+
+export function updateMany(token, items, setList, setTotal) {
+    const config = {
+        headers: {
+            authorization: token
+        }
+    }
+    let req = api.put(`/buying/update/many`, items, config)
+    req.then((res) => {
+        getItems(token, setList, setTotal)
+        // setTotal(list.reduce((accum, curr) =>{return (accum.price + curr.price)}))
+    })
+    req.catch((e) => {
+        console.log("Erro: ", e)
+    })
+}
+
+
+
+
+
+export function getItems(token, setList, setTotal) {
+    const config = {
+        headers: {
+            authorization: token
+        }
+    }
+    let req = api.get(`/buying`, config)
+    req.then((res) => {
+        const { data } = res
+        setList([...data.items]);
+        setTotal(data.total)
+        // setTotal(list.reduce((accum, curr) =>{return (accum.price + curr.price)}))
+    })
+    req.catch((e) => {
+        console.log("Erro: ", e)
+    })
+}
+
+export function sendNewItem(token, setList, list, setTotal) {
+    const item = {
+        "statusText": "default",
+        "nameText": "",
+        "brandText": "",
+        "vol": 0,
+        "unitText": "g",
+        "price": 0,
+        "qtt": 1,
+        "positionIndex": list.length
     }
 
-    const convertedPrice = (itemState.price / 100).toFixed(2)
-
-    return (
-        <StyledItem>
-            <form>
-                <div className="div-chekbox" onClick={() => {
-                    setIconStateFunction(iconState, setIconState)
-                }}>
-                    {arrCheckBox[iconState]}
-                </div>
-                {
-                    itemState.nameText === "" ?
-                        <input className="input-item"
-                            type="text"
-                            value={itemState.nameText}
-                            onChange={(e) => {
-                                setItemState({ ...itemState, nameText: e.target.value })
-                            }}
-                            ref={inputReference}
-                        />
-                        : <input className="input-item"
-                            type="text"
-                            value={itemState.nameText}
-                            onChange={(e) => {
-                                setItemState({ ...itemState, nameText: e.target.value })
-                            }}
-                        />
-                }
-
-                <input className="input-brand"
-                    type="text"
-                    value={itemState.brandText}
-                    onChange={(e) => {
-                        setItemState({ ...itemState, brandText: e.target.value })
-                    }}
-                />
-                <div className="div-vol">
-                    <input className="input-vol"
-                        type="text"
-                        value={itemState.vol}
-                        onChange={(e) => {
-                            setItemState({ ...itemState, vol: e.target.value })
-                        }} />
-                    <select name="unit">
-                        <option value="g">g</option>
-                        <option value="ml">ml</option>
-                        <option value="Kg">Kg</option>
-                        <option value="L">L</option>
-                    </select>
-                </div>
-                <input className="input-qtd"
-                    type="text"
-                    value={itemState.qtt}
-                    onChange={(e) => {
-                        setItemState({ ...itemState, qtt: e.target.value })
-                    }}
-                />
-                <div className="div-price">
-                    R$
-                    <input className="input-price"
-                        type="text"
-                        value={convertedPrice.toString().replace(".", ",")}
-                        onChange={(e) => {
-                            setItemState({ ...itemState, price: parseInt(e.target.value.replace(",", "")) })
-                        }} />
-
-                </div>
-                <div className="div-icon-x">
-                    <Icon icon="bi:x-lg" />
-                </div>
-            </form>
-        </StyledItem>
-    )
+    const config = {
+        headers: {
+            authorization: token
+        }
+    }
+    let req = api.post(`/buying`, item, config)
+    req.then((res) => {
+        getItems(token, setList, setTotal);
+        // setTotal(list.reduce((accum, curr) =>{return (accum.price + curr.price)}))
+    })
+    req.catch((e) => {
+        console.log("Erro: ", e)
+    })
 }
 
-function setIconStateFunction(iconState, setIconState) {
-    let i = iconState
-    i++
-    if (i > 2) { i = 0 }
-    setIconState(i)
-}
+
 
 const StyledContainer = styled.div`
     width: 100vw;
@@ -254,7 +186,7 @@ const StyledContainer = styled.div`
 `
 
 const StyledBox = styled.div`
-    margin-top: 150px;
+    margin-top: 0px;
     width: 90%;
     max-width: 1000px;
     overflow-x: scroll;
@@ -268,7 +200,7 @@ const StyledBox = styled.div`
         display: flex;
         flex-direction: column;
         min-width: 930px;
-        max-height: 58vh;
+        max-height: 55vh;
         overflow-y: scroll;
     }
 
@@ -284,123 +216,33 @@ const StyledBox = styled.div`
     }
 `
 
-const StyledItem = styled.div`
-    
-    form{
-        display: flex;
-        align-items: center;
 
-        .div-chekbox{
-            text-align: center;
-            width: 10%;
-        }
-        .icon-green{
-            color: green;
-            font-size: x-large;
-        }
-        .icon-red{
-            color: red;
-            font-size: x-large;
 
-        }
-        .icon-gray{
-            color: gray;
-            font-size: x-large;
+const StyledTotal = styled.div`
+    width: 150px;
+    margin-top: 5vh;
+    text-align: center;
+    background-image: linear-gradient(to left top, rgba(5, 25, 55, 0.5), rgba(0, 77, 122, 0.5), rgba(0, 135, 147, 0.5), rgba(0, 191, 114, 0.5), rgba(168, 235, 18, 0.5));
+    color: white;
+    padding: 30px;
+    font-size: medium;
+    border-radius: 5px;
 
-        }
+    p{
+        margin-top: 10px;
+        font-size: xx-large;
+        font-weight: 700;
+    }
+`
 
-        .input-item{
-            height: 30px;
-            border: none;
-            font-size: large;
-            width: 25%;
-            padding-right: 3px;
+const StyledCancel = styled.div`
+    margin-top: 5px;
+    width: 90%;
+    max-width: 1000px;
+    text-align: end;
 
-            &:focus, select:focus{
-                box-shadow: 0 0 0 0;
-                border: 0 none;
-                outline: 0;
-            }
-        }
-
-        .input-brand{
-            height: 30px;
-            border: none;
-            font-size: large;
-            width: 15%;
-            padding-right: 3px;
-
-            &:focus, select:focus{
-                box-shadow: 0 0 0 0;
-                border: 0 none;
-                outline: 0;
-            }
-        }
-
-        .div-vol{
-            width: 15%;
-        }
-
-        .input-vol{
-            height: 30px;
-            border: none;
-            font-size: large;
-            width: 50%;
-            padding-right: 3px;
-
-            &:focus, select:focus{
-                box-shadow: 0 0 0 0;
-                border: 0 none;
-                outline: 0;
-            }
-        }
-
-        select{
-            background-color: white;
-            height: 30px;
-            border: none;
-            font-size: large;
-            width: 30%;        
-        }
-
-        .input-qtd{
-            height: 30px;
-            border: none;
-            font-size: large;
-            width: 10%;
-            padding-right: 3px;
-
-            &:focus, select:focus{
-                box-shadow: 0 0 0 0;
-                border: 0 none;
-                outline: 0;
-            }
-        }
-
-        .div-price{
-            font-size: large;
-            width: 15%;
-
-            .input-price{
-                width: 80%;
-                height: 30px;
-                border: none;
-                font-size: large;
-                padding-right: 3px;
-                text-align: end;
-
-                &:focus, select:focus{
-                    box-shadow: 0 0 0 0;
-                    border: 0 none;
-                    outline: 0;
-                }
-            }
-        }
-
-        .div-icon-x{
-            width: 10%;
-            text-align: center;
-        }
-
+    .trash-icon{
+        font-size: x-large;
+        color: #a52121;
     }
 `

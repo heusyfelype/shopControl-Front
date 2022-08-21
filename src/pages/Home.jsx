@@ -1,6 +1,6 @@
 // import { useContext } from "react"
 // import UserContext from "../context/UserContext"
-import {  useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { Icon } from '@iconify/react';
 import Header from "./Header";
@@ -8,10 +8,11 @@ import Footer from "./Footer";
 
 export default function Home() {
     const navigate = useNavigate();
-    // const { userData } = useContext(UserContext);
+    // const token = localStorage.getItem(process.env.REACT_APP_USR_DATA);
+
     return (
         <StyledContainer>
-            <Header/>
+            <Header />
             <StyledBox>
                 <ul>
                     <li onClick={() => { navigate("/history") }}>
@@ -40,7 +41,7 @@ export default function Home() {
                     </li>
                 </ul>
             </StyledBox>
-            <Footer/>
+            <Footer />
         </StyledContainer>
 
     )
