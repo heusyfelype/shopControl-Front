@@ -6,6 +6,7 @@ import Navbar from "./Navbar";
 import { Icon } from "@iconify/react";
 import api from "../api";
 import { EachItem } from "./EachItem";
+import { ConfirmBought } from "./ConfirmBought";
 // import { useNavigate } from "react-router-dom";
 
 const arrTest = []
@@ -18,9 +19,10 @@ export default function Buying() {
     const dragOverItem = useRef();
     const [list, setList] = useState(arrTest);
     const [total, setTotal] = useState(0);
+    const [finishing, setFinishing] = useState(false)
     // const [total, setTotal] = useState(0)
     // console.log("TOTAL", total)
-    // console.log(list)
+    //  console.log(list)
 
     useEffect(() => {
         getItems(token, setList, setTotal);
@@ -42,14 +44,16 @@ export default function Buying() {
         copyListItems.splice(dragItem.current, 1);
         copyListItems.splice(dragOverItem.current, 0, dragItemContent);
         copyListItems.map((item, index) => {
-            return { ...item, positionIndex: index }
+            item.positionIndex = index
         })
         dragItem.current = null;
         dragOverItem.current = null;
+        console.log("lista a ser enviara para o back", copyListItems)
         updateMany(token, copyListItems, setList, setTotal)
     };
 
     const inputReference = useRef();
+    const scroll = useRef();
 
     return (
         <StyledContainer>
@@ -61,21 +65,35 @@ export default function Buying() {
                 <Navbar />
                 <ul className="items">
                     {list.length > 0 ? list.map((item, index) => {
+
+                        function backgroundColor() {
+                            if (item.statusText === "default") {
+                                return "linear-gradient(to right, rgba(204, 204, 204, 0.5), rgba(190, 190, 190, 0.5), rgba(204, 204, 204, 0.5), rgba(231, 231, 231, 0.5), rgba(231, 231, 231, 0.5));"
+                            }
+                            if (item.statusText === "bought") {
+                                return 'linear-gradient(to right, rgba(11, 157, 48, 0.3), rgba(0, 163, 117, 0.3), rgba(0, 164, 168, 0.3), rgba(0, 161, 197, 0.3), rgba(84, 155, 201, 0.3));'
+                            }
+                            return 'linear-gradient(to right, rgba(200, 57, 57, 0.3), rgba(214, 82, 49, 0.3), rgba(225, 107, 40, 0.3), rgba(232, 133, 29, 0.3), rgba(235, 159, 18, 0.3));'
+                        }
+
                         return (
-                            <li key={`${item.id} + ${index} + ${item.statusText}`}
+                            <StyledLi key={`${item.id} + ${index} + ${item.statusText}`}
                                 onDragStart={(e) => dragStart(e, index)}
                                 onDragEnter={(e) => dragEnter(e, index)}
                                 onDragEnd={drop}
                                 draggable
+                                background={backgroundColor}
                             >
                                 <EachItem item={item} inputReference={inputReference} setList={setList} list={list} setTotal={setTotal} />
-                            </li>
+                            </StyledLi>
                         )
                     }) : ""}
                     <li className="new-item"
                         onClick={() => {
                             sendNewItem(token, setList, list, setTotal)
-                        }}>
+                        }}
+                        ref={scroll}
+                    >
                         Inclua um novo item
                     </li>
                 </ul>
@@ -90,7 +108,8 @@ export default function Buying() {
             }}>
                 <Icon className="trash-icon" icon="ion:trash-bin-sharp" />
             </StyledCancel>
-            <Footer />
+            {finishing ? <ConfirmBought items={list} total={total} setFinishing={setFinishing} /> : ""}
+            <Footer setFinishing={setFinishing} />
         </StyledContainer>
 
     )
@@ -122,7 +141,6 @@ export function updateMany(token, items, setList, setTotal) {
         console.log("Erro: ", e)
     })
 }
-
 
 
 
@@ -200,26 +218,32 @@ const StyledBox = styled.div`
         display: flex;
         flex-direction: column;
         min-width: 930px;
-        max-height: 55vh;
+        max-height: 53vh;
         overflow-y: scroll;
     }
 
-    ul li{
-        background-color: rgb(255, 255, 255);
-        border-bottom: 1px solid rgba(150,150,150,0.5);
-        padding: 20px 0px;
-        cursor: pointer;
-    }
 
     ul .new-item{
-        padding-left: 10%;
+        padding: 20px 10%;
+        background-color: white;
+        border-bottom: 1px solid rgba(150,150,150,0.5);
+        cursor: pointer;
+
     }
 `
 
+const StyledLi = styled.li`
+    background-color: white;
+    background-image: ${(props) => props.background};
+    border-bottom: 1px solid rgba(150,150,150,0.5);
+    padding: 20px 0px;
+    cursor: pointer;
+
+`
 
 
 const StyledTotal = styled.div`
-    width: 150px;
+    min-width: 150px;
     margin-top: 5vh;
     text-align: center;
     background-image: linear-gradient(to left top, rgba(5, 25, 55, 0.5), rgba(0, 77, 122, 0.5), rgba(0, 135, 147, 0.5), rgba(0, 191, 114, 0.5), rgba(168, 235, 18, 0.5));

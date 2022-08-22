@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { Icon } from "@iconify/react";
 
 
-export default function Footer() {
+export default function Footer({ setFinishing }) {
     const location = useLocation();
     const navigate = useNavigate();
     console.log("location: ", location.pathname)
@@ -18,19 +18,23 @@ export default function Footer() {
             </StyledFooter>
         )
     }
-    return (
-        <StyledAnotherFooter>
-            <div>
-                <Icon className="styledIcon" icon="bx:left-arrow" onClick={() =>{navigate("/home")}}/>
+
+    if (location.pathname === "/buying") {
+        return (
+            <StyledAnotherFooter>
                 <div>
-                    <p>
-                        finalizar <br /> compra
-                    </p>
-                    <Icon className="icon-history" icon="ic:round-history" />
+                    <Icon className="styledIcon" icon="bx:left-arrow" onClick={() => { navigate("/home") }} />
+                    <div onClick={() => { setFinishing(true) }}>
+                        <p>
+                            finalizar <br /> compra
+                        </p>
+                        <Icon className="icon-history" icon="ic:round-history" />
+                    </div>
                 </div>
-            </div>
-        </StyledAnotherFooter>
-    )
+            </StyledAnotherFooter>
+        )
+    }
+    return ("")
 }
 
 const StyledAnotherFooter = styled.div`
@@ -62,6 +66,7 @@ const StyledAnotherFooter = styled.div`
             padding: 20px;
             width: 200px;
             border-radius: 5px;
+            cursor: pointer;
         }
 
         .icon-history{

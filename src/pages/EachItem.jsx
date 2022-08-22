@@ -14,13 +14,14 @@ export function EachItem({ item, inputReference, setList, list, setTotal }) {
     const [itemState, setItemState] = useState(item)
 
     const convertedPrice = (itemState.price / 100).toFixed(2)
+    
 
     return (
-        <StyledItem>
+        <StyledItem >
             <form onBlur={() => { updateItem(token, itemState, setList, setTotal) }}>
                 <div className="div-chekbox" onClick={() => {
                     const status = updateIcon(itemState.statusText);
-                    updateItem(token, {...item, statusText: status}, setList, setTotal)
+                    updateItem(token, { ...item, statusText: status }, setList, setTotal)
                 }}>
                     {checkBox[`${itemState.statusText}`]}
                 </div>
@@ -63,12 +64,42 @@ export function EachItem({ item, inputReference, setList, list, setTotal }) {
                             }
                             setItemState({ ...itemState, vol: vol })
                         }} />
-                    <select name="unit" onClick={e => {
+                    <select name="unit" defaultValue={itemState.unitText} onClick={e => {
                         e.stopPropagation()
                     }}>
-                        <option value="g">g</option>
-                        <option value="ml">ml</option>
-                        <option value="unid">unid</option>
+                        <option value="g"
+                            onClick={async () => {
+                                try {
+                                    await updateItem(token, { ...itemState, unitText: "g" }, setList, setTotal)
+                                    getItems(token, setList, setTotal)
+                                } catch (e) {
+                                    console.log(e)
+                                }
+                            }}>
+                            g
+                        </option>
+                        <option value="ml"
+                            onClick={async () => {
+                                try {
+                                    await updateItem(token, { ...itemState, unitText: "ml" }, setList, setTotal)
+                                    getItems(token, setList, setTotal)
+                                } catch (e) {
+                                    console.log(e)
+                                }
+                            }}>
+                            ml
+                        </option>
+                        <option value="unid"
+                            onClick={async () => {
+                                try {
+                                    await updateItem(token, { ...itemState, unitText: "unid" }, setList, setTotal)
+                                    getItems(token, setList, setTotal)
+                                } catch (e) {
+                                    console.log(e)
+                                }
+                            }}>
+                            unid
+                        </option>
                     </select>
                 </div>
                 <input className="input-qtd"
@@ -104,7 +135,6 @@ export function EachItem({ item, inputReference, setList, list, setTotal }) {
     )
 }
 
-
 function deleteItem(token, id, setList, setTotal) {
     const config = {
         headers: {
@@ -122,7 +152,7 @@ function deleteItem(token, id, setList, setTotal) {
     })
 }
 
-function updateItem(token, item, setList, setTotal) {
+async function updateItem(token, item, setList, setTotal) {
     const config = {
         headers: {
             authorization: token
@@ -139,11 +169,11 @@ function updateItem(token, item, setList, setTotal) {
 }
 
 function updateIcon(status) {
-    if(status === "default"){
+    if (status === "default") {
         status = "bought"
-    }else if( status === "bought"){
+    } else if (status === "bought") {
         status = "not_bought"
-    } else{
+    } else {
         status = "default"
     }
     return status
@@ -151,10 +181,15 @@ function updateIcon(status) {
 
 
 const StyledItem = styled.div`
+
     
     form{
+        
         display: flex;
         align-items: center;
+        input{
+            background-color: transparent;
+        }
 
         .div-chekbox{
             text-align: center;
@@ -222,7 +257,7 @@ const StyledItem = styled.div`
         }
 
         select{
-            background-color: white;
+            background-color: transparent;
             height: 30px;
             border: none;
             font-size: large;
