@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import Footer from "./Footer";
 import Header from "./Header";
@@ -7,6 +7,7 @@ import { Icon } from "@iconify/react";
 import api from "../api";
 import { EachItem } from "./EachItem";
 import { ConfirmBought } from "./ConfirmBought";
+import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 // import { useNavigate } from "react-router-dom";
 
 const arrTest = []
@@ -15,46 +16,48 @@ export default function Buying() {
     // const navigate = useNavigate();
     const token = localStorage.getItem(process.env.REACT_APP_USR_DATA);
 
-    const dragItem = useRef();
-    const dragOverItem = useRef();
+    // const dragItem = useRef();
+    // const dragOverItem = useRef();
     const [list, setList] = useState(arrTest);
     const [total, setTotal] = useState(0);
     const [finishing, setFinishing] = useState(false)
-    // const [total, setTotal] = useState(0)
-    // console.log("TOTAL", total)
-    //  console.log(list)
 
     useEffect(() => {
         getItems(token, setList, setTotal);
     }, [token])
 
-    const dragStart = (e, position) => {
-        dragItem.current = position;
-        // console.log(e.target.innerHTML, "start Position: ", position);
-    };
+    // const dragStart = (e, position) => {
+    //     dragItem.current = position;
+    //     // console.log(e.target.innerHTML, "start Position: ", position);
+    // };
 
-    const dragEnter = (e, position) => {
-        dragOverItem.current = position;
-        // console.log(e.target.innerHTML, "enter Position: ", position);
-    };
+    // const dragEnter = (e, position) => {
+    //     dragOverItem.current = position;
+    //     // console.log(e.target.innerHTML, "enter Position: ", position);
+    // };
 
-    const drop = (e) => {
-        const copyListItems = [...list];
-        const dragItemContent = copyListItems[dragItem.current];
-        copyListItems.splice(dragItem.current, 1);
-        copyListItems.splice(dragOverItem.current, 0, dragItemContent);
-        const updatedItems = copyListItems.map((item, index) => {
-            return { ...item, positionIndex: index }
-        })
-        setList([...updatedItems])
-        dragItem.current = null;
-        dragOverItem.current = null;
-        console.log("lista a ser enviara para o back", updatedItems)
-        updateMany(token, updatedItems, setList, setTotal)
-    };
+    // const drop = (e) => {
+    //     const copyListItems = [...list];
+    //     const dragItemContent = copyListItems[dragItem.current];
+    //     copyListItems.splice(dragItem.current, 1);
+    //     copyListItems.splice(dragOverItem.current, 0, dragItemContent);
+    //     const updatedItems = copyListItems.map((item, index) => {
+    //         return { ...item, positionIndex: index }
+    //     })
+    //     setList([...updatedItems])
+    //     dragItem.current = null;
+    //     dragOverItem.current = null;
+    //     console.log("lista a ser enviara para o back", updatedItems)
+    //     updateMany(token, updatedItems, setList, setTotal)
+    // };
 
-    const inputReference = useRef();
-    const scroll = useRef();
+    // const inputReference = useRef();
+    // const scroll = useRef();
+
+    const onDragEnd = useCallback((e) => {
+        console.log(e)
+        // the only one that is required
+    }, []);
 
     return (
         <StyledContainer>
@@ -64,40 +67,54 @@ export default function Buying() {
             </StyledTotal>
             <StyledBox>
                 <Navbar />
-                <ul className="items">
-                    {list.length > 0 ? list.map((item, index) => {
-
-                        function backgroundColor() {
-                            if (item.statusText === "default") {
-                                return "linear-gradient(to right, rgba(204, 204, 204, 0.5), rgba(190, 190, 190, 0.5), rgba(204, 204, 204, 0.5), rgba(231, 231, 231, 0.5), rgba(231, 231, 231, 0.5));"
-                            }
-                            if (item.statusText === "bought") {
-                                return 'linear-gradient(to right, rgba(11, 157, 48, 0.3), rgba(0, 163, 117, 0.3), rgba(0, 164, 168, 0.3), rgba(0, 161, 197, 0.3), rgba(84, 155, 201, 0.3));'
-                            }
-                            return 'linear-gradient(to right, rgba(200, 57, 57, 0.3), rgba(214, 82, 49, 0.3), rgba(225, 107, 40, 0.3), rgba(232, 133, 29, 0.3), rgba(235, 159, 18, 0.3));'
-                        }
-
-                        return (
-                            <StyledLi key={`${item.id} + ${index} + ${item.statusText}`}
-                                onDragStart={(e) => dragStart(e, index)}
-                                onDragEnter={(e) => dragEnter(e, index)}
-                                onDragEnd={drop}
-                                draggable
-                                background={backgroundColor}
+                <DragDropContext onDragEnd={onDragEnd}>
+                    <Droppable droppableId="1">
+                        {(provided) => {
+                            return <ul
+                                className="items"
+                                ref={provided.innerRef}
+                                {...provided.droppableProps}
                             >
-                                <EachItem item={item} inputReference={inputReference} setList={setList} list={list} setTotal={setTotal} />
-                            </StyledLi>
-                        )
-                    }) : ""}
-                    <li className="new-item"
-                        onClick={() => {
-                            sendNewItem(token, setList, list, setTotal)
+                                {list.length > 0 ? list.map((item, index) => {
+
+                                    function backgroundColor() {
+                                        if (item.statusText === "default") {
+                                            return "linear-gradient(to right, rgba(204, 204, 204, 0.5), rgba(190, 190, 190, 0.5), rgba(204, 204, 204, 0.5), rgba(231, 231, 231, 0.5), rgba(231, 231, 231, 0.5));"
+                                        }
+                                        if (item.statusText === "bought") {
+                                            return 'linear-gradient(to right, rgba(11, 157, 48, 0.3), rgba(0, 163, 117, 0.3), rgba(0, 164, 168, 0.3), rgba(0, 161, 197, 0.3), rgba(84, 155, 201, 0.3));'
+                                        }
+                                        return 'linear-gradient(to right, rgba(200, 57, 57, 0.3), rgba(214, 82, 49, 0.3), rgba(225, 107, 40, 0.3), rgba(232, 133, 29, 0.3), rgba(235, 159, 18, 0.3));'
+                                    }
+
+                                    return (
+                                        <Draggable draggableId={item.id.toString()} index={index} key={item.id}>
+                                            {(provided) => {
+                                                return <StyledLi
+                                                    background={backgroundColor}
+                                                    ref={provided.innerRef}
+                                                    {...provided.draggableProps}
+                                                    {...provided.dragHandleProps}
+                                                >
+                                                    <EachItem item={item} setList={setList} list={list} setTotal={setTotal} />
+                                                </StyledLi>
+
+                                            }}
+                                        </Draggable>
+                                    )
+                                }) : ""}
+                                {provided.placeholder}
+                                <li className="new-item"
+                                    onClick={() => {
+                                        sendNewItem(token, setList, list, setTotal)
+                                    }}
+                                >
+                                    Inclua um novo item
+                                </li>
+                            </ul>
                         }}
-                        ref={scroll}
-                    >
-                        Inclua um novo item
-                    </li>
-                </ul>
+                    </Droppable>
+                </DragDropContext>
             </StyledBox>
             <StyledCancel onClick={async () => {
                 try {
@@ -155,6 +172,7 @@ export function getItems(token, setList, setTotal) {
     let req = api.get(`/buying`, config)
     req.then((res) => {
         const { data } = res
+        console.log([...data.items])
         setList([...data.items]);
         setTotal(data.total)
         // setTotal(list.reduce((accum, curr) =>{return (accum.price + curr.price)}))
