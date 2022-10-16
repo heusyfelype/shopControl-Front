@@ -43,13 +43,14 @@ export default function Buying() {
         const dragItemContent = copyListItems[dragItem.current];
         copyListItems.splice(dragItem.current, 1);
         copyListItems.splice(dragOverItem.current, 0, dragItemContent);
-        copyListItems.map((item, index) => {
-            item.positionIndex = index
+        const updatedItems = copyListItems.map((item, index) => {
+            return { ...item, positionIndex: index }
         })
+        setList([...updatedItems])
         dragItem.current = null;
         dragOverItem.current = null;
-        console.log("lista a ser enviara para o back", copyListItems)
-        updateMany(token, copyListItems, setList, setTotal)
+        console.log("lista a ser enviara para o back", updatedItems)
+        updateMany(token, updatedItems, setList, setTotal)
     };
 
     const inputReference = useRef();

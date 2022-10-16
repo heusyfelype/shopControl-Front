@@ -6,9 +6,6 @@ import Signup from './pages/SignUp';
 import Home from './pages/Home';
 import Buying from './pages/Buying';
 import Trying from './pages/trying';
-// import dotenv from "dotenv";
-// dotenv.config()
-
 
 export default function App() {
   const [userData, setUserData] = useState(JSON.parse(localStorage.getItem("userData")));
