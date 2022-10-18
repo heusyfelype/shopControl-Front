@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import Footer from "./Footer";
 import Header from "./Header";
@@ -8,16 +8,11 @@ import api from "../api";
 import { EachItem } from "./EachItem";
 import { ConfirmBought } from "./ConfirmBought";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
-// import { useNavigate } from "react-router-dom";
 
 const arrTest = []
 
 export default function Buying() {
-    // const navigate = useNavigate();
     const token = localStorage.getItem(process.env.REACT_APP_USR_DATA);
-
-    // const dragItem = useRef();
-    // const dragOverItem = useRef();
     const [list, setList] = useState(arrTest);
     const [total, setTotal] = useState(0);
     const [finishing, setFinishing] = useState(false)
@@ -26,38 +21,25 @@ export default function Buying() {
         getItems(token, setList, setTotal);
     }, [token])
 
-    // const dragStart = (e, position) => {
-    //     dragItem.current = position;
-    //     // console.log(e.target.innerHTML, "start Position: ", position);
-    // };
+    const onDragEnd = result => {
+        const { destination, source, draggableId } = result;
+        if (!destination) {
+            return;
+        }
+        if (destination.droppableId === source.droppableId && destination.index === source.index) {
+            return;
+        }
 
-    // const dragEnter = (e, position) => {
-    //     dragOverItem.current = position;
-    //     // console.log(e.target.innerHTML, "enter Position: ", position);
-    // };
-
-    // const drop = (e) => {
-    //     const copyListItems = [...list];
-    //     const dragItemContent = copyListItems[dragItem.current];
-    //     copyListItems.splice(dragItem.current, 1);
-    //     copyListItems.splice(dragOverItem.current, 0, dragItemContent);
-    //     const updatedItems = copyListItems.map((item, index) => {
-    //         return { ...item, positionIndex: index }
-    //     })
-    //     setList([...updatedItems])
-    //     dragItem.current = null;
-    //     dragOverItem.current = null;
-    //     console.log("lista a ser enviara para o back", updatedItems)
-    //     updateMany(token, updatedItems, setList, setTotal)
-    // };
-
-    // const inputReference = useRef();
-    // const scroll = useRef();
-
-    const onDragEnd = useCallback((e) => {
-        console.log(e)
-        // the only one that is required
-    }, []);
+        const copyListItems = [...list];
+        const dragItemContent = copyListItems[source.index];
+        copyListItems.splice(source.index, 1);
+        copyListItems.splice(destination.index, 0, dragItemContent);
+        const updatedItems = copyListItems.map((item, index) => {
+            return { ...item, positionIndex: index }
+        })
+        setList([...updatedItems]);
+        updateMany(token, updatedItems, setList, setTotal)
+    };
 
     return (
         <StyledContainer>
@@ -172,7 +154,6 @@ export function getItems(token, setList, setTotal) {
     let req = api.get(`/buying`, config)
     req.then((res) => {
         const { data } = res
-        console.log([...data.items])
         setList([...data.items]);
         setTotal(data.total)
         // setTotal(list.reduce((accum, curr) =>{return (accum.price + curr.price)}))
