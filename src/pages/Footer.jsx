@@ -6,7 +6,6 @@ import { Icon } from "@iconify/react";
 export default function Footer({ setFinishing }) {
     const location = useLocation();
     const navigate = useNavigate();
-    console.log("location: ", location.pathname)
 
     if (location.pathname === "/home") {
         return (
