@@ -20,9 +20,10 @@ const StyledNav = styled.nav`
     display: flex;
     flex-wrap: nowrap;
     align-items: center;
-    background-color: white;
+    background-color: #e3e3e3;
     height: 80px;
-    margin: 20px 0px;
+    margin: 15px 0px;
+    border-radius: 3px;
 
     div{
         color: rgb(77, 86, 161);

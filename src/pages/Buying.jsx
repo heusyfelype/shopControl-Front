@@ -22,7 +22,7 @@ export default function Buying() {
     }, [token])
 
     const onDragEnd = result => {
-        const { destination, source, draggableId } = result;
+        const { destination, source } = result;
         if (!destination) {
             return;
         }
@@ -70,7 +70,7 @@ export default function Buying() {
                                     }
 
                                     return (
-                                        <Draggable draggableId={item.id.toString()} index={index} key={item.id}>
+                                        <Draggable draggableId={item.id.toString()} index={index} key={item.id + item.statusText}>
                                             {(provided) => {
                                                 return <StyledLi
                                                     background={backgroundColor}
@@ -86,28 +86,29 @@ export default function Buying() {
                                     )
                                 }) : ""}
                                 {provided.placeholder}
-                                <li className="new-item"
+                                <StyledNewItem className="new-item"
                                     onClick={() => {
                                         sendNewItem(token, setList, list, setTotal)
                                     }}
                                 >
                                     Inclua um novo item
-                                </li>
+                                </StyledNewItem>
+                                <StyledCancel onClick={async () => {
+                                    try {
+                                        await deleteMany(token);
+                                        getItems(token, setList, setTotal);
+                                    } catch (e) {
+                                        console.log(e)
+                                    }
+                                }}>
+                                    <Icon className="trash-icon" icon="ion:trash-bin-sharp" />
+                                </StyledCancel>
                             </ul>
                         }}
                     </Droppable>
                 </DragDropContext>
             </StyledBox>
-            <StyledCancel onClick={async () => {
-                try {
-                    await deleteMany(token);
-                    getItems(token, setList, setTotal);
-                } catch (e) {
-                    console.log(e)
-                }
-            }}>
-                <Icon className="trash-icon" icon="ion:trash-bin-sharp" />
-            </StyledCancel>
+
             {finishing ? <ConfirmBought items={list} total={total} setFinishing={setFinishing} /> : ""}
             <Footer setFinishing={setFinishing} />
         </StyledContainer>
@@ -192,10 +193,22 @@ export function sendNewItem(token, setList, list, setTotal) {
 
 
 
+const StyledNewItem = styled.li`
+    padding: 20px 10%;
+    width: 100%;
+    background-color: white;
+    border-bottom: 1px solid rgba(150,150,150,0.5);
+    cursor: pointer;
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+`
+
 const StyledContainer = styled.div`
     width: 100vw;
     min-height: 100vh;
-    background: rgb(248,250,248);
+    background: #d0d0d0;
+    border-radius: 3px;
     background: linear-gradient(-45deg, rgba(248,250,248,1) 0%, rgba(225,240,229,1) 50%, rgba(248,250,248,1) 100%);    
     display: flex;
     flex-direction: column;
@@ -205,6 +218,7 @@ const StyledContainer = styled.div`
 
 const StyledBox = styled.div`
     margin-top: 0px;
+    padding-bottom: 60px;
     width: 90%;
     max-width: 1000px;
     overflow-x: scroll;
@@ -220,15 +234,6 @@ const StyledBox = styled.div`
         min-width: 930px;
         max-height: 53vh;
         overflow-y: scroll;
-    }
-
-
-    ul .new-item{
-        padding: 20px 10%;
-        background-color: white;
-        border-bottom: 1px solid rgba(150,150,150,0.5);
-        cursor: pointer;
-
     }
 `
 
@@ -261,9 +266,12 @@ const StyledTotal = styled.div`
 
 const StyledCancel = styled.div`
     margin-top: 5px;
-    width: 90%;
+    width: 10%;
     max-width: 1000px;
-    text-align: end;
+    text-align: center;
+    position: absolute;
+    right: 0px;
+    bottom: 15px;
 
     .trash-icon{
         font-size: x-large;
