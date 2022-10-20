@@ -19,7 +19,6 @@ export default function App() {
           <Route path='/home' element={<Home />} />
           <Route path='/buying' element={<Buying />} />
           <Route path='/trying' element={<Trying />} />
-
         </Routes>
       </BrowserRouter>
     </UserContext.Provider>

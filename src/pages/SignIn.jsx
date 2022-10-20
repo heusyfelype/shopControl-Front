@@ -3,9 +3,9 @@ import UserContext from "../context/UserContext";
 import { useContext } from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import api from "../api";
 import { useNavigate } from "react-router-dom";
 import logo_principal from "../assets/logo-principal.png";
+import { getToken } from "../api/BackEndConnections";
 
 export default function SignIn() {
     const navigate = useNavigate()
@@ -15,25 +15,18 @@ export default function SignIn() {
         password: ""
     })
 
-    function getToken(e) {
-        e.preventDefault();
-        let req = api.post(`/signin`, inputState)
-        req.then((res) => {
-            const { data } = res
-            localStorage.setItem(process.env.REACT_APP_USR_DATA, data.token)
-            setUserData(data)
-            navigate("/home")
-        })
-        req.catch((e) => {
-            console.log("Erro: ", e)
-        })
-    }
     return (
         <StyledContainer>
             <StyledBox>
                 <img src={logo_principal} alt="" />
-                <form onSubmit={(e) => {
-                    getToken(e)
+                <form onSubmit={async (e) => {
+                    e.preventDefault();
+                    getToken(inputState).then(res => {
+                        const { data } = res
+                        localStorage.setItem(process.env.REACT_APP_USR_DATA, data.token)
+                        setUserData(data)
+                        navigate("/home")
+                    }).catch(e => console.log("Erro: ", e))
                 }}>
                     <input type="email"
                         placeholder="email@email.com"
@@ -57,11 +50,12 @@ export default function SignIn() {
     )
 }
 
+const GradientBackground = 'linear-gradient(30deg, rgba(66,92,89,1) 50%, #53716e 80%, rgba(66,92,89,1) 100%)'
+
 const StyledContainer = styled.div`
     width: 100vw;
     min-height: 100vh;
-    background: rgb(248,250,248);
-    background: linear-gradient(-45deg, rgba(248,250,248,1) 0%, rgba(225,240,229,1) 50%, rgba(248,250,248,1) 100%);    
+    background: ${GradientBackground};    
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -71,6 +65,10 @@ const StyledContainer = styled.div`
     a{
         text-decoration: none;
         display: block;
+        color:  rgb(253, 207, 163);
+    }
+    a:visited{
+        text-decoration: none;
     }
 `
 
@@ -100,6 +98,8 @@ const StyledBox = styled.div`
         input{
             display: block;
             border: none;
+            background-color: rgba(0,0,0,0);
+            border-bottom: 1px solid rgb(253, 207, 163);
             width: 100%;
             height: 60px;
             text-align: center;
@@ -119,8 +119,8 @@ const StyledBox = styled.div`
             border: none;
             font-size: large;
             font-weight: 700;
-            color: white;
-            background-color: rgb(77, 86, 171);
+            color: rgb(66,92,89);
+            background-color: rgb(253, 207, 163);
             border-radius: 20px;
             cursor: pointer;
         }
