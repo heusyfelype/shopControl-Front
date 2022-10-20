@@ -4,56 +4,31 @@ import { useContext } from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import logo_principal from "../assets/logo-principal.png";
 import { getToken } from "../api/BackEndConnections";
+import FormsLogin from "../components/FormsLogin";
+import { GradientBackground } from "../assets/GeneralStyles";
+import Logo from "../components/Logo";
+import { motion } from "framer-motion";
 
 export default function SignIn() {
-    const navigate = useNavigate()
-    const { setUserData } = useContext(UserContext);
-    const [inputState, setInputState] = useState({
-        email: "",
-        password: ""
-    })
+
 
     return (
-        <StyledContainer>
+        <StyledContainer initial={{ width: 0 }} animate={{ width: '100vw', transition:{duration:0.5} }} exit={{ width: window.innerWidth }} >
             <StyledBox>
-                <img src={logo_principal} alt="" />
-                <form onSubmit={async (e) => {
-                    e.preventDefault();
-                    getToken(inputState).then(res => {
-                        const { data } = res
-                        localStorage.setItem(process.env.REACT_APP_USR_DATA, data.token)
-                        setUserData(data)
-                        navigate("/home")
-                    }).catch(e => console.log("Erro: ", e))
-                }}>
-                    <input type="email"
-                        placeholder="email@email.com"
-                        value={inputState.email}
-                        onChange={(e) => {
-                            setInputState({ ...inputState, email: e.target.value })
-                        }} />
-                    <input type="password"
-                        placeholder="senha..."
-                        value={inputState.password}
-                        onChange={(e) => {
-                            setInputState({ ...inputState, password: e.target.value })
-                        }} />
-                    <button type="submit"> Entrar </button>
-                </form>
+                <Logo />
+                <h3> A melhor forma de gerenciar <br /> as suas comprinhas de <br /> supermercado. <br /> Leve a Lixtinha com você! &#10084; </h3>
+                <FormsLogin />
             </StyledBox>
-            <Link to="/signup">
+            <StyledLink to="/signup">
                 Ainda não tem conta?
-            </Link>
+            </StyledLink>
         </StyledContainer>
     )
 }
 
-const GradientBackground = 'linear-gradient(30deg, rgba(66,92,89,1) 50%, #53716e 80%, rgba(66,92,89,1) 100%)'
 
-const StyledContainer = styled.div`
-    width: 100vw;
+const StyledContainer = styled(motion.div)`
     min-height: 100vh;
     background: ${GradientBackground};    
     display: flex;
@@ -61,13 +36,13 @@ const StyledContainer = styled.div`
     justify-content: center;
     align-items: center;
     gap: 20px;
+`
 
-    a{
-        text-decoration: none;
-        display: block;
-        color:  rgb(253, 207, 163);
-    }
-    a:visited{
+const StyledLink = styled(Link)`
+    text-decoration: none;
+    display: block;
+    color:  rgb(253, 207, 163);
+    &:visited{
         text-decoration: none;
     }
 `
@@ -78,51 +53,15 @@ const StyledBox = styled.div`
     height: 75vh;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-end;
     justify-content: space-between;
 
-    img{
-        width: 80%;
-        padding: 30px 0px;
-        font-size: xx-large;
-        font-weight: 700;
-        color: rgb(136, 195, 133);
-    }
 
-    form{
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 10px;
-        width: 100%;
-        input{
-            display: block;
-            border: none;
-            background-color: rgba(0,0,0,0);
-            border-bottom: 1px solid rgb(253, 207, 163);
-            width: 100%;
-            height: 60px;
-            text-align: center;
-
-            &::placeholder{
-                text-align: center;
-                font-size: large;
-                color: rgb(77, 86, 171);
-                opacity: 100%;
-                
-            }
-        }
-        button{
-            display: block;
-            width: 100%;
-            height: 60px;
-            border: none;
-            font-size: large;
-            font-weight: 700;
-            color: rgb(66,92,89);
-            background-color: rgb(253, 207, 163);
-            border-radius: 20px;
-            cursor: pointer;
-        }
+    h3{
+        text-align: right;
+        font-size: 14px;
+        line-height: 1.5em;
+        color:  rgb(253, 207, 163);
+        font-weight: 300;
     }
 `
