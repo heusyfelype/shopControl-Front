@@ -39,7 +39,7 @@ export default function FormsLogin() {
   )
 }
 
-const StyledForm = styled.form`
+export const StyledForm = styled.form`
   display: flex;
   flex-direction: column;
   align-items: center;
