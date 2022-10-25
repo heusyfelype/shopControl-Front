@@ -1,128 +1,84 @@
 import styled from "styled-components";
-import UserContext from "../context/UserContext";
-import { useContext } from "react";
-import { useState } from "react";
 import { Link } from "react-router-dom";
-import api from "../api";
-import { useNavigate } from "react-router-dom";
-import logo_principal from "../assets/logo-principal.png";
+import FormsLogin from "../components/FormsLogin";
+import { GradientBackground } from "../assets/GeneralStyles";
+import Logo from "../components/Logo";
+import { motion } from "framer-motion";
 
 export default function SignIn() {
-    const navigate = useNavigate()
-    const { setUserData } = useContext(UserContext);
-    const [inputState, setInputState] = useState({
-        email: "",
-        password: ""
-    })
 
-    function getToken(e) {
-        e.preventDefault();
-        let req = api.post(`/signin`, inputState)
-        req.then((res) => {
-            const { data } = res
-            localStorage.setItem(process.env.REACT_APP_USR_DATA, data.token)
-            setUserData(data)
-            navigate("/home")
-        })
-        req.catch((e) => {
-            console.log("Erro: ", e)
-        })
-    }
     return (
-        <StyledContainer>
-            <StyledBox>
-                <img src={logo_principal} alt="" />
-                <form onSubmit={(e) => {
-                    getToken(e)
-                }}>
-                    <input type="email"
-                        placeholder="email@email.com"
-                        value={inputState.email}
-                        onChange={(e) => {
-                            setInputState({ ...inputState, email: e.target.value })
-                        }} />
-                    <input type="password"
-                        placeholder="senha..."
-                        value={inputState.password}
-                        onChange={(e) => {
-                            setInputState({ ...inputState, password: e.target.value })
-                        }} />
-                    <button type="submit"> Entrar </button>
-                </form>
-            </StyledBox>
-            <Link to="/signup">
-                Ainda não tem conta?
-            </Link>
-        </StyledContainer>
+        <Body>
+            <StyledContainer
+                initial={{ opacity: 0, scale: 0.80 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{opacity: 0}}
+                transition={{
+                    default: {
+                        duration: 0.3,
+                        // ease: [0, 0.71, 0.2, 1.01]
+                    },
+                    scale: {
+                        type: "spring",
+                        damping: 5,
+                        stiffness: 100,
+                        restDelta: 0.001
+                    }
+                }}
+            >
+                <StyledBox>
+                    <Logo />
+                    <h3> A melhor forma de gerenciar <br /> as suas compras de <br /> supermercado. <br /> Leve a Lixtinha com você! &#10084; </h3>
+                    <FormsLogin />
+                </StyledBox>
+                <StyledLink to="/signup">
+                    Ainda não tem conta?
+                </StyledLink>
+            </StyledContainer>
+        </Body >
     )
 }
 
-const StyledContainer = styled.div`
-    width: 100vw;
+const Body = styled.div`
+    height: 100vh;
+    background: ${GradientBackground};
+`
+
+
+export const StyledContainer = styled(motion.div)`
     min-height: 100vh;
-    background: rgb(248,250,248);
-    background: linear-gradient(-45deg, rgba(248,250,248,1) 0%, rgba(225,240,229,1) 50%, rgba(248,250,248,1) 100%);    
+    /* background: ${GradientBackground};     */
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     gap: 20px;
+`
 
-    a{
+export const StyledLink = styled(Link)`
+    text-decoration: none;
+    display: block;
+    color:  rgb(253, 207, 163);
+    &:visited{
         text-decoration: none;
-        display: block;
     }
 `
 
-const StyledBox = styled.div`
+export const StyledBox = styled.div`
     width: 80%;
     max-width: 500px;
     height: 75vh;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-end;
     justify-content: space-between;
 
-    img{
-        width: 80%;
-        padding: 30px 0px;
-        font-size: xx-large;
-        font-weight: 700;
-        color: rgb(136, 195, 133);
-    }
 
-    form{
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 10px;
-        width: 100%;
-        input{
-            display: block;
-            border: none;
-            width: 100%;
-            height: 60px;
-            text-align: center;
-
-            &::placeholder{
-                text-align: center;
-                font-size: large;
-                color: rgb(77, 86, 171);
-                opacity: 100%;
-                
-            }
-        }
-        button{
-            display: block;
-            width: 100%;
-            height: 60px;
-            border: none;
-            font-size: large;
-            font-weight: 700;
-            color: white;
-            background-color: rgb(77, 86, 171);
-            border-radius: 20px;
-            cursor: pointer;
-        }
+    h3{
+        text-align: right;
+        font-size: 14px;
+        line-height: 1.5em;
+        color:  rgb(253, 207, 163);
+        font-weight: 300;
     }
 `
