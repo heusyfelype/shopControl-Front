@@ -10,20 +10,32 @@ export default function SignIn() {
     return (
         <Body>
             <StyledContainer
-                initial={{ width: '0vw' }}
-                animate={{ width: '100vw' }}
-                exit={{ x: '0' }}
+                initial={{ opacity: 0, scale: 0.80 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{opacity: 0}}
+                transition={{
+                    default: {
+                        duration: 0.3,
+                        // ease: [0, 0.71, 0.2, 1.01]
+                    },
+                    scale: {
+                        type: "spring",
+                        damping: 5,
+                        stiffness: 100,
+                        restDelta: 0.001
+                    }
+                }}
             >
                 <StyledBox>
                     <Logo />
-                    <h3> A melhor forma de gerenciar <br /> as suas comprinhas de <br /> supermercado. <br /> Leve a Lixtinha com você! &#10084; </h3>
+                    <h3> A melhor forma de gerenciar <br /> as suas compras de <br /> supermercado. <br /> Leve a Lixtinha com você! &#10084; </h3>
                     <FormsLogin />
                 </StyledBox>
                 <StyledLink to="/signup">
                     Ainda não tem conta?
                 </StyledLink>
             </StyledContainer>
-        </Body>
+        </Body >
     )
 }
 
@@ -35,7 +47,7 @@ const Body = styled.div`
 
 export const StyledContainer = styled(motion.div)`
     min-height: 100vh;
-    background: ${GradientBackground};    
+    /* background: ${GradientBackground};     */
     display: flex;
     flex-direction: column;
     justify-content: center;
