@@ -5,6 +5,7 @@ import { Icon } from "@iconify/react";
 import styled from "styled-components";
 import logo_short from "../assets/logo-short.png"
 import { useNavigate } from "react-router-dom";
+import { BEIGE_COLOR } from "../assets/GeneralStyles";
 
 
 export default function Header() {
@@ -31,9 +32,9 @@ const StyledHeader = styled.header`
     left: 0px;
     right: 0px;
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: center;
-    padding: 50px 0px 20px 0px;
+    padding: 5vh 7% 8vh 7%;
 
     img{
         display: block;
@@ -43,6 +44,7 @@ const StyledHeader = styled.header`
     .styledIcon{
         display: block;
         font-size: xx-large;
-        color: rgb(77, 86, 161);
+        color: ${BEIGE_COLOR};
+        opacity: 50%;
     }
 `

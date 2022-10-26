@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import FormsLogin from "../components/FormsLogin";
-import { GradientBackground } from "../assets/GeneralStyles";
+import { BEIGE_COLOR, GradientBackground } from "../assets/GeneralStyles";
 import Logo from "../components/Logo";
 import { motion } from "framer-motion";
 
@@ -12,17 +12,15 @@ export default function SignIn() {
             <StyledContainer
                 initial={{ opacity: 0, scale: 0.80 }}
                 animate={{ opacity: 1, scale: 1 }}
-                exit={{opacity: 0}}
+                exit={{ opacity: 0 }}
                 transition={{
                     default: {
                         duration: 0.3,
-                        // ease: [0, 0.71, 0.2, 1.01]
                     },
                     scale: {
                         type: "spring",
-                        damping: 5,
-                        stiffness: 100,
-                        restDelta: 0.001
+                        damping: 3,
+                        stiffness: 50,
                     }
                 }}
             >
@@ -58,7 +56,7 @@ export const StyledContainer = styled(motion.div)`
 export const StyledLink = styled(Link)`
     text-decoration: none;
     display: block;
-    color:  rgb(253, 207, 163);
+    color:  ${BEIGE_COLOR};
     &:visited{
         text-decoration: none;
     }
@@ -78,7 +76,7 @@ export const StyledBox = styled.div`
         text-align: right;
         font-size: 14px;
         line-height: 1.5em;
-        color:  rgb(253, 207, 163);
+        color: ${BEIGE_COLOR};
         font-weight: 300;
     }
 `

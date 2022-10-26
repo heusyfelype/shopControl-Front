@@ -37,8 +37,8 @@ export default function Footer({ setFinishing }) {
 }
 
 const StyledAnotherFooter = styled.div`
-     position: fixed;
-    bottom: 0px;
+    position: fixed;
+    bottom: 20px;
     left: 0px;
     right: 0px;
     text-align: center;
@@ -76,9 +76,7 @@ const StyledAnotherFooter = styled.div`
 
 const StyledFooter = styled.footer`
     position: fixed;
-    bottom: 0px;
-    left: 0px;
-    right: 0px;
+    bottom: 20px;
     text-align: center;
     height: 80px;
     color: white;
