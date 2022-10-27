@@ -9,6 +9,7 @@ import { StyledContainer } from "./SignIn";
 import { BEIGE_COLOR, FOREST_GREEN, GradientBackground } from "../assets/GeneralStyles";
 import { motion } from "framer-motion";
 import check_img from "../assets/check.png";
+import { hover } from "@testing-library/user-event/dist/hover";
 
 
 export default function Home() {
@@ -20,7 +21,20 @@ export default function Home() {
 
             {/* <StyledContainer> */}
             <Header />
-            <StyledBox>
+            <StyledBox
+                variants={{
+                    hidden: { y: '100vh', height: 0, display: 'none' },
+                    visible: {
+                        y: '15vh',
+                        height: '85vh',
+                        display: 'flex'
+                    }
+                }}
+                initial='hidden'
+                animate='visible'
+                transition={{default:{duration: 0.5}}}
+            >
+
                 <img src={check_img} alt="" />
                 <motion.ul
                     className="container"
@@ -28,28 +42,36 @@ export default function Home() {
                     initial="hidden"
                     animate="visible"
                 >
-                    <motion.li variants={item} onClick={() => { navigate("/history") }}>
+                    <motion.li variants={item}
+                        whileHover={{ scale: 1.01 }}
+                        onClick={() => { navigate("/history") }}>
                         <Icon className="styledIcon" icon="fluent:text-bullet-list-square-search-20-regular" />
                         <p >
                             histórico de <br /> compras
                         </p>
                         <Icon className="styledIcon" icon="akar-icons:chevron-right" />
                     </motion.li>
-                    <motion.li variants={item} onClick={() => { navigate("/history") }}>
+                    <motion.li variants={item}
+                        whileHover={{ scale: 1.01 }}
+                        onClick={() => { navigate("/history") }}>
                         <Icon className="styledIcon" icon="carbon:compare" />
                         <p >
                             compare <br />compras
                         </p>
                         <Icon className="styledIcon" icon="akar-icons:chevron-right" />
                     </motion.li>
-                    <motion.li variants={item} onClick={() => { navigate("/history") }}>
+                    <motion.li variants={item}
+                        whileHover={{ scale: 1.01 }}
+                        onClick={() => { navigate("/history") }}>
                         <Icon className="styledIcon" icon="bx:list-plus" />
                         <p >
                             crie uma lista <br /> pré-definida
                         </p>
                         <Icon className="styledIcon" icon="akar-icons:chevron-right" />
                     </motion.li>
-                    <motion.li variants={item} onClick={() => { navigate("/history") }}>
+                    <motion.li variants={item}
+                        whileHover={{ scale: 1.01 }}
+                        onClick={() => { navigate("/history") }}>
                         <Icon className="styledIcon" icon="fluent:arrow-trending-lines-20-filled" />
                         <p >
                             gastos por <br /> mês
@@ -66,33 +88,24 @@ export default function Home() {
 }
 
 const Body = styled.div`
-    width: 100vw;
+    /* width: 100vw; */
     height: 100vh;
     background: ${GradientBackground};
     position: relative;
 
 `
 
-const StyledBox = styled.div`
+const StyledBox = styled(motion.div)`
+    background-image: linear-gradient(to right top, #f6fffa, #f5fff7, #f5fff4, #f7fff0, #f9ffec);    
     width: 100%;
-    /* height: 75vh; */
-    /* display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between; */
-    background-image: linear-gradient(to right top, #f6fffa, #f5fff7, #f5fff4, #f7fff0, #f9ffec);    width: 100%;
     padding: 5vh 25px 0px 25px;
-    position: absolute;
-    bottom: 0%;
-    left: 0px;
-    top: 15%;
     border-radius: 25px 25px 0px 0px;
-    display: flex;
     flex-direction: column;
     align-items: center;
 
     & > img {
         width: 60%;
+        max-width: 300px;
         padding: 20px;
     }
     
@@ -136,7 +149,7 @@ const container = {
             delayChildren: 0.3,
             staggerChildren: 0.2
         }
-    }
+    },
 };
 
 const item = {

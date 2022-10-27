@@ -28,9 +28,7 @@ function logOut(setUserData) {
 
 const StyledHeader = styled.header`
     position: fixed;
-    top: 0px;
-    left: 0px;
-    right: 0px;
+    width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
