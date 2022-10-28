@@ -110,7 +110,7 @@ export default function Buying() {
             </StyledBox>
 
             {finishing ? <ConfirmBought items={list} total={total} setFinishing={setFinishing} /> : ""}
-            <Footer setFinishing={setFinishing} />
+            {/* <Footer setFinishing={setFinishing} /> */}
         </StyledContainer>
 
     )
