@@ -8,6 +8,8 @@ import api from "../api";
 import { EachItem } from "./EachItem";
 import { ConfirmBought } from "./ConfirmBought";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
+import { FOREST_GREEN } from "../assets/GeneralStyles";
+import { motion } from "framer-motion";
 
 const arrTest = []
 
@@ -47,7 +49,21 @@ export default function Buying() {
             <StyledTotal>
                 Total: R$ <p> {(total / 100).toFixed(2).replace(".", ",")} </p>
             </StyledTotal>
-            <StyledBox>
+            <StyledBox
+                variants={{
+                    hidden: { y: '100vh', height: 0, display: 'none' },
+                    visible: {
+                        y: '15vh',
+                        height: '85vh',
+                        display: 'block'
+                    },
+                    exit: { y: '100vh', height: 0 }
+                }}
+                initial='hidden'
+                animate='visible'
+                exit='exit'
+                transition={{ default: { duration: 0.5 } }}
+            >
                 <Navbar />
                 <DragDropContext onDragEnd={onDragEnd}>
                     <Droppable droppableId="1">
@@ -209,20 +225,28 @@ const StyledContainer = styled.div`
     min-height: 100vh;
     background: #d0d0d0;
     border-radius: 3px;
-    background: linear-gradient(-45deg, rgba(248,250,248,1) 0%, rgba(225,240,229,1) 50%, rgba(248,250,248,1) 100%);    
+    background: ${FOREST_GREEN};    
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 20px;
 `
 
-const StyledBox = styled.div`
-    margin-top: 0px;
+const StyledBox = styled(motion.div)`
+    /* margin-top: 0px;
     padding-bottom: 60px;
     width: 90%;
     max-width: 1000px;
     overflow-x: scroll;
-    position: relative;
+    position: relative; */
+
+    background-image: linear-gradient(to right top, #f6fffa, #f5fff7, #f5fff4, #f7fff0, #f9ffec);    
+    width: 100%;
+    max-width: 680px;
+    padding: 5vh 25px 0px 25px;
+    border-radius: 25px 25px 0px 0px;
+    /* flex-direction: column; */
+    /* align-items: center; */
 
     > div{
         
@@ -231,14 +255,12 @@ const StyledBox = styled.div`
     ul{
         display: flex;
         flex-direction: column;
-        min-width: 930px;
         max-height: 53vh;
         overflow-y: scroll;
     }
 `
 
 const StyledLi = styled.li`
-    background-color: white;
     background-image: ${(props) => props.background};
     border-bottom: 1px solid rgba(150,150,150,0.5);
     padding: 20px 0px;

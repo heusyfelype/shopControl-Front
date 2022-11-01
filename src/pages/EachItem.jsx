@@ -3,6 +3,7 @@ import { Icon } from "@iconify/react";
 import { useState } from "react";
 import api from "../api";
 import styled from "styled-components";
+import { motion } from "framer-motion";
 
 let timerId;
 
@@ -14,15 +15,18 @@ export function EachItem({ item, inputReference, setList, list, setTotal }) {
         "not_bought": <Icon className="icon icon-red" icon="bi:x-square-fill" />
     }
     const [itemState, setItemState] = useState(item)
-    let itemStateNameText = itemState.nameText;
-    console.log("NAME TEXT: ", itemState.nameText)
+    // let itemStateNameText = itemState.nameText;
+    // console.log("NAME TEXT: ", itemState.nameText)
 
     const convertedPrice = (itemState.price / 100).toFixed(2)
 
 
 
     return (
-        <StyledItem >
+        <StyledItem
+            variants={item}
+            whileHover={{ scale: 1.01 }}
+        >
             <form onBlur={() => { updateItem(token, itemState, setList, setTotal) }}>
                 <div className="div-chekbox" onClick={() => {
                     const status = updateIcon(itemState.statusText);
@@ -37,10 +41,7 @@ export function EachItem({ item, inputReference, setList, list, setTotal }) {
                             value={itemState.nameText}
                             onChange={(e) => {
                                 setItemState({ ...itemState, nameText: e.target.value })
-                                // const timerId = window.setTimeout(() => { updateItem(token, itemState, setList, setTotal) }, 1500)
-                                // console.log(timerId)
                             }}
-                        // ref={inputReference}
                         />
                         : <input className="input-item"
                             type="text"
@@ -189,7 +190,7 @@ function updateIcon(status) {
 }
 
 
-const StyledItem = styled.div`
+const StyledItem = styled(motion.div)`
 
     
     form{
@@ -314,3 +315,11 @@ const StyledItem = styled.div`
 
     }
 `
+
+const item = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+        y: 0,
+        opacity: 1
+    }
+};
