@@ -4,12 +4,9 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { Icon } from '@iconify/react';
 import Header from "./Header";
-import Footer from "./Footer";
-import { StyledContainer } from "./SignIn";
 import { BEIGE_COLOR, FOREST_GREEN, GradientBackground } from "../assets/GeneralStyles";
-import { delay, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import check_img from "../assets/check.png";
-import { hover } from "@testing-library/user-event/dist/hover";
 import ForwardBuyingButton from "../components/ForwardBuyingButton";
 
 
@@ -166,8 +163,8 @@ const container = {
         opacity: 1,
         scale: 1,
         transition: {
-            delayChildren: 0.3,
-            staggerChildren: 0.2
+            delayChildren: 0.35,
+            staggerChildren: 0.3
         }
     },
 };

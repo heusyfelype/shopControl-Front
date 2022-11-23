@@ -10,9 +10,9 @@ let timerId;
 export function EachItem({ item, inputReference, setList, list, setTotal }) {
     const token = localStorage.getItem(process.env.REACT_APP_USR_DATA);
     const checkBox = {
-        "default": <Icon className="icon icon-gray" icon='bi:check-square-fill' />,
-        "bought": <Icon className="icon icon-green" icon='bi:check-square-fill' />,
-        "not_bought": <Icon className="icon icon-red" icon="bi:x-square-fill" />
+        "default": <Icon className="icon icon-gray" icon='eva:square-fill' />,
+        "bought": <Icon className="icon icon-green" icon='eva:checkmark-square-2-fill' />,
+        "not_bought": <Icon className="icon icon-red" icon="eva:close-square-fill" />
     }
     const [itemState, setItemState] = useState(item)
     // let itemStateNameText = itemState.nameText;
