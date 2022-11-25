@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { motion, Reorder } from "framer-motion";
 import { getItems } from "../api/BackEndConnections";
 import HandleErrors from "../components/HandleErrors";
-import styled from "styled-components";
 import { GradientBackground } from "../assets/GeneralStyles";
 import Header from "./Header";
 import { Content } from "../components/EachItem"
@@ -35,30 +34,7 @@ export default function Buying() {
                 exit='exit'
                 transition={{ default: { duration: 0.5 } }}
             >
-
-                {items && <motion.ul variants={variantsMotionUl}
-                    initial='closed'
-                    animate='open'
-                    style={{
-                        position: 'absolute',
-                        left: '1vw',
-                        bottom: '1vw',
-                        right: '1vw',
-                    }}
-                    transition={{
-                        type: "spring",
-                        bounce: 0,
-                        duration: 0.7,
-                        delayChildren: 0.3,
-                        staggerChildren: 0.5
-
-                    }}
-                >
-                    {items.map((item) => (
-                        <motion.li item={item} key={item.id} variants={itemVariants}> {item.nameText} </motion.li>
-                    ))}
-                </motion.ul>}
-                {/* <Reorder.Group
+                {items && <Reorder.Group
                     className="container"
                     axis="y"
                     onReorder={reorder}
@@ -73,27 +49,18 @@ export default function Buying() {
                         bottom: '1vw',
                         right: '1vw',
                     }}
-                // transition={{ default: { duration: 0.8 } }}
-
                 >
-                    {items.length ? items.map((item) => (
+                    {items.map((item) => (
                         <Content item={item} saveReordered={saveReordered} key={item.id} />
-                    )) : ""}
-                </Reorder.Group> */}
+                    ))}
+                </Reorder.Group>}
             </motion.section>
 
         </motion.main>
     );
 }
 
-// const itemAnimation = {
-//     hidden: { y: 20, opacity: 0 },
-//     visible: {
-//         y: 0,
-//         opacity: 1,
-//         // transition: { default:{duration : 1} }
-//     }
-// };
+
 
 const styledMain = {
     width: '100vw',
@@ -109,9 +76,9 @@ const container = {
         height: '80vh',
         overflowY: 'scroll',
         transition: {
-            default: { duration: 1 },
-            delayChildren: 0.6,
-            staggerChildren: 0.6
+            default: { duration: 0.5 },
+            delayChildren: 0.25,
+            staggerChildren: 0.15
         }
     }
 }
@@ -136,40 +103,40 @@ const sectionVariantes = {
 
 
 //------------------------------------------------------------------------------
-const itemVariants = {
-    open: {
-        height: '80px',
-        backgroundColor: 'gray',
-        marginBottom: '5px',
-        opacity: 1,
-        y: 0,
-        transition: { type: "spring", stiffness: 300, damping: 24 }
-    },
-    closed: {
-        height: '0px',
-        opacity: 0,
-        y: 20,
-        transition: { duration: 0.2 }
-    }
-};
+// const itemVariants = {
+//     open: {
+//         height: '80px',
+//         backgroundColor: 'gray',
+//         marginBottom: '5px',
+//         opacity: 1,
+//         y: 0,
+//         transition: { type: "spring", stiffness: 300, damping: 24 }
+//     },
+//     closed: {
+//         height: '0px',
+//         opacity: 0,
+//         y: 20,
+//         transition: { duration: 0.2 }
+//     }
+// };
 
-const variantsMotionUl = {
-    open: {
-        clipPath: "inset(0% 0% 0% 0% round 10px)",
-        // transition: {
-        //     type: "spring",
-        //     bounce: 0,
-        //     duration: 0.7,
-        //     delayChildren: 0.3,
-        //     staggerChildren: 0.5
-        // }
-    },
-    closed: {
-        clipPath: "inset(10% 50% 90% 50% round 10px)",
-        transition: {
-            type: "spring",
-            bounce: 0,
-            duration: 0.3
-        }
-    }
-}
+// const variantsMotionUl = {
+//     open: {
+//         clipPath: "inset(0% 0% 0% 0% round 10px)",
+//         // transition: {
+//         //     type: "spring",
+//         //     bounce: 0,
+//         //     duration: 0.7,
+//         //     delayChildren: 0.3,
+//         //     staggerChildren: 0.5
+//         // }
+//     },
+//     closed: {
+//         clipPath: "inset(10% 50% 90% 50% round 10px)",
+//         transition: {
+//             type: "spring",
+//             bounce: 0,
+//             duration: 0.3
+//         }
+//     }
+// }

@@ -16,3 +16,12 @@ export function getItems(token) {
   }
   return api.get(`/buying`, config)
 }
+
+export function updateItem(token, item) {
+  const config = {
+    headers: {
+      authorization: token
+    }
+  }
+  return  api.post(`/buying`, item, config)
+}
