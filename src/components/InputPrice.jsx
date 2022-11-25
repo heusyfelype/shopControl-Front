@@ -3,12 +3,15 @@ import { useState } from "react"
 export default function InputPrice({ item }) {
   const [price, setPrice] = useState((item.price / 100).toFixed(2).replace(".", ","))
   return <>
-  R$ <input
+    R$ <input
       // className="input-item"
       type="text"
-      style={{width: '80px'}}
+      style={{ width: '80px' }}
       value={price}
       onChange={(e) => {
+        if (Number(e.target.value.replace(",", "")) > 9999999999) {
+          return;
+        }
         if (e.nativeEvent.inputType === "deleteContentBackward" || e.nativeEvent.inputType === "deleteContentForward") {
           setPrice((Number(e.target.value.replace(",", "")) / 100).toFixed(2).replace(".", ","))
           return;
