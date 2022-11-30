@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { updateItem } from "../api/BackEndConnections";
 import { Icon } from "@iconify/react";
+import styled from "styled-components";
 
 
 const checkBox = {
@@ -22,12 +23,18 @@ export default function CheckBoxItem({ item }) {
   }
 
   return (
-    <div onClick={() => {
+    <StyledBoxIcon 
+    onClick={() => {
       changeStatus();
       //updateAPI()
     }}>
       {checkBox[`${statusCheck}`]}
-    </div>
+    </StyledBoxIcon>
   )
 }
 
+const StyledBoxIcon = styled.div`
+  & .icon{
+    font-size: 24px;
+  }
+`

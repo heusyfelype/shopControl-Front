@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { motion, Reorder } from "framer-motion";
+import { motion, Reorder, useAnimation } from "framer-motion";
 import { getItems } from "../api/BackEndConnections";
 import HandleErrors from "../components/HandleErrors";
 import { GradientBackground } from "../assets/GeneralStyles";
@@ -9,7 +9,8 @@ import { Content } from "../components/EachItem"
 export default function Buying() {
     const [items, setItems] = useState();
     const token = localStorage.getItem(process.env.REACT_APP_USR_DATA);
-    console.log("ITEMS: ", items)
+    // const buttonControls = useAnimation();
+
 
     useEffect(() => {
         getItems(token).then((res) => { setItems([...res.data.items]) }).catch(HandleErrors);
@@ -77,9 +78,9 @@ const container = {
         overflowY: 'scroll',
         transition: {
             default: { duration: 0.5 },
-            delayChildren: 0.25,
-            staggerChildren: 0.15
-        }
+            delayChildren: 0.3,
+            staggerChildren: 0.25
+      }
     }
 }
 
@@ -93,50 +94,3 @@ const sectionVariantes = {
     },
     exit: { y: '100vh', height: 0 }
 }
-
-
-
-
-
-
-
-
-
-//------------------------------------------------------------------------------
-// const itemVariants = {
-//     open: {
-//         height: '80px',
-//         backgroundColor: 'gray',
-//         marginBottom: '5px',
-//         opacity: 1,
-//         y: 0,
-//         transition: { type: "spring", stiffness: 300, damping: 24 }
-//     },
-//     closed: {
-//         height: '0px',
-//         opacity: 0,
-//         y: 20,
-//         transition: { duration: 0.2 }
-//     }
-// };
-
-// const variantsMotionUl = {
-//     open: {
-//         clipPath: "inset(0% 0% 0% 0% round 10px)",
-//         // transition: {
-//         //     type: "spring",
-//         //     bounce: 0,
-//         //     duration: 0.7,
-//         //     delayChildren: 0.3,
-//         //     staggerChildren: 0.5
-//         // }
-//     },
-//     closed: {
-//         clipPath: "inset(10% 50% 90% 50% round 10px)",
-//         transition: {
-//             type: "spring",
-//             bounce: 0,
-//             duration: 0.3
-//         }
-//     }
-// }

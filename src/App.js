@@ -24,7 +24,7 @@ export default function App() {
 function AnimationRouter() {
   let location = useLocation();
   return (
-    <AnimatePresence initial={'false'} >
+    <AnimatePresence  >
       <Routes location={location} key={location.pathname} >
         <Route path='/' element={<SignIn />} />
         <Route path='/signup' element={<Signup />} />
