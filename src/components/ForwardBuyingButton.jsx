@@ -23,7 +23,7 @@ export default function ForwardBuyingButton() {
 const StyledForwardBuyingButton = styled(motion.div)`
     z-index: 2;
     position: absolute;
-    background-color: ${FOREST_GREEN};
+    /* background-color: ${FOREST_GREEN}; */
     display: flex;
     right: 7%;
     bottom: 5%;

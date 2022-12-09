@@ -2,13 +2,9 @@ import { useState } from "react";
 import { updateItem } from "../api/BackEndConnections";
 import { Icon } from "@iconify/react";
 import styled from "styled-components";
+import { motion } from "framer-motion";
 
 
-const checkBox = {
-  "default": <Icon className="icon icon-gray" icon='eva:square-fill' />,
-  "bought": <Icon className="icon icon-green" icon='eva:checkmark-square-2-fill' />,
-  "not_bought": <Icon className="icon icon-red" icon="eva:close-square-fill" />
-}
 
 export default function CheckBoxItem({ item }) {
 
@@ -23,18 +19,44 @@ export default function CheckBoxItem({ item }) {
   }
 
   return (
-    <StyledBoxIcon 
-    onClick={() => {
-      changeStatus();
-      //updateAPI()
-    }}>
+    <StyledBoxIcon
+      whileTap={{ scale: 1.1 }}
+      onClick={() => {
+        changeStatus();
+        //updateAPI()
+      }}>
       {checkBox[`${statusCheck}`]}
     </StyledBoxIcon>
   )
 }
 
-const StyledBoxIcon = styled.div`
+const StyledBoxIcon = styled(motion.div)`
+  grid-area: b;
+
   & .icon{
     font-size: 24px;
   }
 `
+
+// const statusAnimation = {
+//   default: {
+//     color: 'gray',
+//   },
+//   bought: {
+//     color: 'green',
+//   },
+//   not_bought: {
+//     color: 'red',
+//   }
+
+// }
+
+const StyledIcon = styled(Icon)`
+  color: ${props => props.color};
+`
+
+const checkBox = {
+  "default": <StyledIcon className="icon" color="gray" icon='eva:square-fill' />,
+  "bought": <StyledIcon className="icon" color="green" icon='eva:checkmark-square-2-fill' />,
+  "not_bought": <StyledIcon className="icon" color="red" icon="eva:close-square-fill" />
+}

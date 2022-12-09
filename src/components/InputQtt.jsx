@@ -16,5 +16,7 @@ export default function InputQtt({ item }) {
 }
 
 const StyledInput = styled.input`
-  
+  display: block;
+  grid-area: d;
+  width: 100%;
 `

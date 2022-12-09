@@ -1,12 +1,13 @@
 import { useState } from "react"
+import styled from "styled-components";
 
 export default function InputPrice({ item }) {
   const [price, setPrice] = useState((item.price / 100).toFixed(2).replace(".", ","))
-  return <>
+  return <StyledPrice>
     R$ <input
       // className="input-item"
       type="text"
-      style={{ width: '80px' }}
+      style={{ width: '100%' }}
       value={price}
       onChange={(e) => {
         if (Number(e.target.value.replace(",", "")) > 9999999999) {
@@ -22,5 +23,12 @@ export default function InputPrice({ item }) {
         setPrice((Number((price + e.nativeEvent.data).replace(",", "")) / 100).toFixed(2).replace(".", ","))
       }}
     />
-  </>
+  </StyledPrice>
 }
+
+const StyledPrice = styled.div`
+  grid-area: e;
+  width: 100%;
+  display: flex;
+  align-items: center;
+`

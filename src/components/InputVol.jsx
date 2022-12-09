@@ -16,5 +16,7 @@ export default function InputVol({ item }) {
 }
 
 const StyledInput = styled.input`
-  
+  display: block;
+  grid-area: g;
+  width: 100%;
 `

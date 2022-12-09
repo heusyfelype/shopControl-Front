@@ -102,7 +102,7 @@ const Body = styled.div`
 `
 
 const StyledBox = styled(motion.div)`
-    background-image: linear-gradient(to right top, #f6fffa, #f5fff7, #f5fff4, #f7fff0, #f9ffec);    
+    /* background-image: linear-gradient(to right top, #f6fffa, #f5fff7, #f5fff4, #f7fff0, #f9ffec);     */
     width: 100%;
     max-width: 680px;
     padding: 5vh 25px 0px 25px;

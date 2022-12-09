@@ -1,20 +1,27 @@
 import { useEffect, useState } from "react";
-import { motion, Reorder, useAnimation } from "framer-motion";
+import { motion, Reorder } from "framer-motion";
 import { getItems } from "../api/BackEndConnections";
 import HandleErrors from "../components/HandleErrors";
 import { GradientBackground } from "../assets/GeneralStyles";
 import Header from "./Header";
-import { Content } from "../components/EachItem"
+import { EachItem } from "../components/EachItem";
+import { BEIGE_COLOR } from "./../assets/GeneralStyles";
+import BuyingFooter from "../components/BuyingFooter";
+import { useRef } from "react";
+import styled from "styled-components";
+import ItemsContext from "../context/ItemsContext";
 
 export default function Buying() {
-    const [items, setItems] = useState();
+    const [items, setItems] = useState([]);
     const token = localStorage.getItem(process.env.REACT_APP_USR_DATA);
-    // const buttonControls = useAnimation();
-
-
     useEffect(() => {
         getItems(token).then((res) => { setItems([...res.data.items]) }).catch(HandleErrors);
     }, [token])
+
+    const isLastChild = true
+
+    const isFirstRendering = useRef(true)
+
     function reorder(items) {
         setItems([...items])
     }
@@ -28,69 +35,115 @@ export default function Buying() {
         <motion.main initial={styledMain}>
             <Header />
 
-            <motion.section
-                variants={sectionVariantes}
+            <StyledBox
+                variants={{
+                    hidden: { y: '100vh', height: 0, backgroundColor: 'white' },
+                    visible: {
+                        y: '15vh',
+                        height: '85vh',
+                        display: 'flex',
+                        backgroundColor: 'red'
+                    },
+                    exit: { y: '100vh', height: 0 }
+                }}
                 initial='hidden'
-                animate='visible'
+                animate={(e) => { return 'visible' }}
                 exit='exit'
-                transition={{ default: { duration: 0.5 } }}
+                transition={{ height: { duration: 0.5 }, y: { duration: 0.5 } }}
             >
-                {items && <Reorder.Group
-                    className="container"
-                    axis="y"
-                    onReorder={reorder}
-                    values={items}
+                {<ItemsContext.Provider value={{ items, setItems }}>
+                    {items.length && <Reorder.Group
+                        className="container"
+                        axis="y"
+                        onReorder={reorder}
+                        values={items}
 
-                    variants={container}
-                    initial='hidden'
-                    animate='visible'
-                    style={{
-                        position: 'absolute',
-                        left: '1vw',
-                        bottom: '1vw',
-                        right: '1vw',
-                    }}
-                >
-                    {items.map((item) => (
-                        <Content item={item} saveReordered={saveReordered} key={item.id} />
-                    ))}
-                </Reorder.Group>}
-            </motion.section>
+                        variants={container}
+                        initial='hidden'
+                        animate='visible'
+                        style={{
+                            position: 'absolute',
+                            left: '0vw',
+                            bottom: '0vw',
+                            right: '0vw',
+                        }}
+                    >
+                        {items.map((item, index) => {
+                            if (index === items.length - 1) {
+                                return <EachItem
+                                    ref={isFirstRendering}
+                                    item={item}
+                                    setItems={setItems}
+                                    saveReordered={saveReordered}
+                                    key={item.id}
+                                    identificador={item.id}
+                                    isLastChild={isLastChild}
+                                />
+                            }
+                            return <EachItem
+                                ref={isFirstRendering}
+                                item={item}
+                                setItems={setItems}
+                                saveReordered={saveReordered}
+                                key={item.id}
+                                identificador={item.id}
+                                isLastChild={!isLastChild}
+                            />
+                        })}
+                    </Reorder.Group>}
+
+                </ItemsContext.Provider>}
+                <BuyingFooter items={items} setItems={setItems} />
+            </StyledBox>
 
         </motion.main>
     );
 }
 
 
+const StyledBox = styled(motion.div)`
+    background-image: linear-gradient(to right top, #f6fffa, #f5fff7, #f5fff4, #f7fff0, #f9ffec);    
+    width: 100%;
+    max-width: 680px;
+    padding: 5vh 25px 0px 25px;
+    border-radius: 25px 25px 0px 0px;
+    flex-direction: column;
+    align-items: center;
+
+`
 
 const styledMain = {
     width: '100vw',
     height: '100vh',
-    background: `${GradientBackground}`
+    background: `${GradientBackground}`,
+    overflowY: 'scroll'
+}
+
+const sectionVariants = {
+    hidden: { y: '50vh', height: '10vh', backgroundColor: 'red' },
+    visible: {
+        y: '15vh',
+        height: '85vh',
+        display: 'block',
+        // backgroundColor: `${BEIGE_COLOR}`,
+        backgroundImage: 'linear-gradient(to right top, #f6fffa, #f5fff7, #f5fff4, #f7fff0, #f9ffec)',
+        borderRadius: '20px 20px 0px 0px'
+    },
+    exit: { y: '100vh', height: 0 }
 }
 
 const container = {
     hidden: { height: '0', display: 'none' },
     visible: {
         display: 'block',
-        backgroundColor: 'aquamarine',
         height: '80vh',
         overflowY: 'scroll',
         transition: {
             default: { duration: 0.5 },
             delayChildren: 0.3,
-            staggerChildren: 0.25
-      }
+            staggerChildren: 0.05
+        }
     }
 }
 
-const sectionVariantes = {
-    hidden: { y: '100vh', display: 'none' },
-    visible: {
-        y: '15vh',
-        height: '85vh',
-        display: 'block',
-        backgroundColor: 'pink',
-    },
-    exit: { y: '100vh', height: 0 }
-}
+
