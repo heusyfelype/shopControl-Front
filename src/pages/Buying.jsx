@@ -10,9 +10,11 @@ import BuyingFooter from "../components/BuyingFooter";
 import { useRef } from "react";
 import styled from "styled-components";
 import ItemsContext from "../context/ItemsContext";
+import InputSaveItem from "../components/InputSaveItem";
 
 export default function Buying() {
     const [items, setItems] = useState([]);
+    const [showModal, setShowModal] = useState(false)
     const token = localStorage.getItem(process.env.REACT_APP_USR_DATA);
     useEffect(() => {
         getItems(token).then((res) => { setItems([...res.data.items]) }).catch(HandleErrors);
@@ -51,7 +53,7 @@ export default function Buying() {
                 exit='exit'
                 transition={{ height: { duration: 0.5 }, y: { duration: 0.5 } }}
             >
-                {<ItemsContext.Provider value={{ items, setItems }}>
+                <ItemsContext.Provider value={{ items, setItems }}>
                     {items.length && <Reorder.Group
                         className="container"
                         axis="y"
@@ -69,17 +71,6 @@ export default function Buying() {
                         }}
                     >
                         {items.map((item, index) => {
-                            if (index === items.length - 1) {
-                                return <EachItem
-                                    ref={isFirstRendering}
-                                    item={item}
-                                    setItems={setItems}
-                                    saveReordered={saveReordered}
-                                    key={item.id}
-                                    identificador={item.id}
-                                    isLastChild={isLastChild}
-                                />
-                            }
                             return <EachItem
                                 ref={isFirstRendering}
                                 item={item}
@@ -87,15 +78,16 @@ export default function Buying() {
                                 saveReordered={saveReordered}
                                 key={item.id}
                                 identificador={item.id}
-                                isLastChild={!isLastChild}
+                                isLastChild={index === items.length - 1 ? isLastChild : !isLastChild}
                             />
                         })}
-                    </Reorder.Group>}
+                    </Reorder.Group> || ""}
 
-                </ItemsContext.Provider>}
-                <BuyingFooter items={items} setItems={setItems} />
+                </ItemsContext.Provider>
+                <BuyingFooter items={items} setItems={setItems} setShowModal={setShowModal} />
             </StyledBox>
 
+            {showModal ? <InputSaveItem items={items} setShowModal={setShowModal} /> : ""}
         </motion.main>
     );
 }

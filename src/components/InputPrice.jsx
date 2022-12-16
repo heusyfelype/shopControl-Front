@@ -1,11 +1,12 @@
 import { useState } from "react"
 import styled from "styled-components";
 
-export default function InputPrice({ item }) {
-  const [price, setPrice] = useState((item.price / 100).toFixed(2).replace(".", ","))
+export default function InputPrice({ item, itemInfos, setItemInfos }) {
+
+  const price = (itemInfos.price / 100).toFixed(2).replace(".", ",")
+
   return <StyledPrice>
     R$ <input
-      // className="input-item"
       type="text"
       style={{ width: '100%' }}
       value={price}
@@ -14,13 +15,13 @@ export default function InputPrice({ item }) {
           return;
         }
         if (e.nativeEvent.inputType === "deleteContentBackward" || e.nativeEvent.inputType === "deleteContentForward") {
-          setPrice((Number(e.target.value.replace(",", "")) / 100).toFixed(2).replace(".", ","))
+          setItemInfos({ ...itemInfos, price: Number(e.target.value.replace(",", "")) })
           return;
         }
         if (!Number(e.nativeEvent.data) && e.nativeEvent.data !== '0') {
           return;
         }
-        setPrice((Number((price + e.nativeEvent.data).replace(",", "")) / 100).toFixed(2).replace(".", ","))
+        setItemInfos({ ...itemInfos, price: Number((price + e.nativeEvent.data).replace(",", "")) })
       }}
     />
   </StyledPrice>
@@ -31,4 +32,20 @@ const StyledPrice = styled.div`
   width: 100%;
   display: flex;
   align-items: center;
+  justify-content: space-evenly;
+  
+  input{
+    max-width: 70%;
+    text-align: end;
+    border-width: 0 0 1pt 0;
+    background-color: rgba(0,0,0,0);
+    border-width: 0 0 1pt 0;
+    border-style: solid;
+    border-image: linear-gradient(to right, #e1e1e1, #bebebe) 1;
+
+
+    :focus{
+      outline: none;
+    }
+  }
 `

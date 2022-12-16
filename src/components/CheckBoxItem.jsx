@@ -6,15 +6,13 @@ import { motion } from "framer-motion";
 
 
 
-export default function CheckBoxItem({ item }) {
-
-  const [statusCheck, setStatusCheck] = useState(item.statusText);
+export default function CheckBoxItem({ item, itemInfos, setItemInfos }) {
 
   function changeStatus() {
-    switch (statusCheck) {
-      case 'default': setStatusCheck("bought"); break;
-      case 'bought': setStatusCheck("not_bought"); break;
-      case 'not_bought': setStatusCheck("default"); break;
+    switch (itemInfos.statusText) {
+      case 'default': setItemInfos({ ...itemInfos, statusText: "bought" }); break;
+      case 'bought': setItemInfos({ ...itemInfos, statusText: "not_bought" }); break;
+      case 'not_bought': setItemInfos({ ...itemInfos, statusText: "default" }); break;
     }
   }
 
@@ -25,7 +23,7 @@ export default function CheckBoxItem({ item }) {
         changeStatus();
         //updateAPI()
       }}>
-      {checkBox[`${statusCheck}`]}
+      {checkBox[`${itemInfos.statusText}`]}
     </StyledBoxIcon>
   )
 }

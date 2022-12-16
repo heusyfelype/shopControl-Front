@@ -2,8 +2,8 @@ import React from "react"
 import { useState } from "react"
 import styled from "styled-components"
 
-export const InputNameText = React.forwardRef(function InputNameText({ item, isLastChild }, ref) {
-  const [nameText, setNameText] = useState(item.nameText)
+export const InputNameText = React.forwardRef(function InputNameText({ item, isLastChild, itemInfos, setItemInfos }, ref) {
+  // const [nameText, setNameText] = useState(item.nameText)
 
   if (isLastChild) {
     ref.current = false
@@ -13,17 +13,19 @@ export const InputNameText = React.forwardRef(function InputNameText({ item, isL
 
   return isLastChild ? <StyledInput
     type="text"
-    value={nameText}
+    value={itemInfos.nameText}
+    placeholder="Insira o nome do produto"
     autoFocus
     onChange={(e) => {
-      setNameText(e.target.value)
+      setItemInfos({ ...itemInfos, nameText: e.target.value })
     }}
   /> : <StyledInput
     // className="input-item"
     type="text"
-    value={nameText}
+    placeholder="Insira o nome do produto"
+    value={itemInfos.nameText}
     onChange={(e) => {
-      setNameText(e.target.value)
+      setItemInfos({ ...itemInfos, nameText: e.target.value })
     }}
   />
 }
@@ -33,4 +35,12 @@ const StyledInput = styled.input`
   display: block;
   grid-area: c;
   width: 100%;
+  border-width: 0 0 1pt 0;
+  border-style: solid;
+  border-image: linear-gradient(to right, #f5f5f5, #bebebe) 1;
+  background-color: rgba(0,0,0,0);
+
+  :focus{
+    outline: none;
+  }
 `

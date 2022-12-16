@@ -29,6 +29,10 @@ export function deleteItem(token, id) {
   return api.delete("/buying", config)
 }
 
+export function saveBought(token, list) {
+  const config = _configHeaders(token);
+  return api.post("/bought/create", list, config)
+}
 
 function _configHeaders(token) {
   return {
