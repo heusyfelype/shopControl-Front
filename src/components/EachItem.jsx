@@ -41,9 +41,9 @@ export const EachItem = React.forwardRef(function EachItem({ item, saveReordered
             onBlur={(e) => {
                 setResize('removeHeight')
                 updateItem(token, itemInfos).then(() => {
-                    getItems(token).then((res) => {
-                        setItems([...res.data.items])
-                    })
+                    // getItems(token).then((res) => {
+                    //     setItems([...res.data.items])
+                    // })
                 }).catch(HandleErrors)
             }}
 

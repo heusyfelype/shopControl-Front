@@ -107,6 +107,8 @@ const StyledBox = styled(motion.div)`
 const styledMain = {
     width: '100vw',
     height: '100vh',
+    // display: 'flex',
+    // justifyContent: 'center',
     background: `${GradientBackground}`,
     overflowY: 'scroll'
 }
