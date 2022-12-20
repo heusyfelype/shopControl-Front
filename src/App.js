@@ -8,6 +8,7 @@ import Buying from './pages/Buying';
 import Trying from './pages/trying';
 
 import { AnimatePresence } from 'framer-motion';
+import { wait } from '@testing-library/user-event/dist/utils';
 
 export default function App() {
   const [userData, setUserData] = useState(JSON.parse(localStorage.getItem("userData")));

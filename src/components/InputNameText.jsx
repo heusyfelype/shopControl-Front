@@ -2,30 +2,28 @@ import React from "react"
 import { useState } from "react"
 import styled from "styled-components"
 
-export const InputNameText = React.forwardRef(function InputNameText({ item, isLastChild, itemInfos, setItemInfos }, ref) {
-  // const [nameText, setNameText] = useState(item.nameText)
+export const InputNameText = React.forwardRef(function InputNameText({ item, isLastChild}, ref) {
+  const [nameText, setNameText] = useState(item.nameText)
 
   if (isLastChild) {
     ref.current = false
   }
-
-  // console.log("isLastChild: ", isLastChild, " ref: ", ref)
-
+  
   return isLastChild ? <StyledInput
     type="text"
-    value={itemInfos.nameText}
+    value={nameText}
     placeholder="Insira o nome do produto"
     autoFocus
     onChange={(e) => {
-      setItemInfos({ ...itemInfos, nameText: e.target.value })
+      setNameText(e.target.value)
     }}
   /> : <StyledInput
     // className="input-item"
     type="text"
     placeholder="Insira o nome do produto"
-    value={itemInfos.nameText}
+    value={nameText}
     onChange={(e) => {
-      setItemInfos({ ...itemInfos, nameText: e.target.value })
+      setNameText(e.target.value)
     }}
   />
 }

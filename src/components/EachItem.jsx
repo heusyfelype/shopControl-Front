@@ -19,10 +19,10 @@ let timeId = null;
 
 export const EachItem = React.forwardRef(function EachItem({ item, saveReordered, setItems, identificador, isLastChild }, ref) {
     const [resize, setResize] = useState('removeHeight');
-    // const [statusCheck, setStatusCheck] = useState(item.statusText);
-    const [itemInfos, setItemInfos] = useState({ ...item })
-    const backgroundgradient = defineBackground(itemInfos.statusText);
-    const token = localStorage.getItem(process.env.REACT_APP_USR_DATA);
+    const [statusCheck, setStatusCheck] = useState(item.statusText);
+    // const [itemInfos, setItemInfos] = useState({ ...item })
+    const backgroundgradient = defineBackground(statusCheck);
+    // const token = localStorage.getItem(process.env.REACT_APP_USR_DATA);
     return (
         <StyledItem
             backgroundgradient={backgroundgradient}
@@ -40,26 +40,26 @@ export const EachItem = React.forwardRef(function EachItem({ item, saveReordered
             }}
             onBlur={(e) => {
                 setResize('removeHeight')
-                updateItem(token, itemInfos).then(() => {
-                    // getItems(token).then((res) => {
-                    //     setItems([...res.data.items])
-                    // })
-                }).catch(HandleErrors)
+                // updateItem(token, itemInfos).then(() => {
+                //     // getItems(token).then((res) => {
+                //     //     setItems([...res.data.items])
+                //     // })
+                // }).catch(HandleErrors)
             }}
 
-            whileTap={{ scaleY: 1.1 }}
+            // whileTap={{ scaleY: 1.1 }}
         >
             <StyledForm  >
                 <Icon className='icon-three-dots' icon="bi:three-dots-vertical" />
-                {/* <CheckBoxItem item={item} statusCheck={statusCheck} setStatusCheck={setStatusCheck} /> */}
-                <CheckBoxItem item={item} itemInfos={itemInfos} setItemInfos={setItemInfos} />
-                <InputNameText item={item} isLastChild={isLastChild} ref={ref} itemInfos={itemInfos} setItemInfos={setItemInfos} />
-                <InputQtt item={item} itemInfos={itemInfos} setItemInfos={setItemInfos} />
+                <CheckBoxItem item={item} statusCheck={statusCheck} setStatusCheck={setStatusCheck} />
+                {/* <CheckBoxItem item={item} itemInfos={itemInfos} setItemInfos={setItemInfos} /> */}
+                <InputNameText item={item} isLastChild={isLastChild} ref={ref}/>
+                {/* <InputQtt item={item} itemInfos={itemInfos} setItemInfos={setItemInfos} />
                 <InputPrice item={item} itemInfos={itemInfos} setItemInfos={setItemInfos} />
                 <ExcludeItem item={item} setItems={setItems} />
                 <InputBrand item={item} itemInfos={itemInfos} setItemInfos={setItemInfos} />
                 <InputVol item={item} itemInfos={itemInfos} setItemInfos={setItemInfos} />
-                <SelectUnit item={item} itemInfos={itemInfos} setItemInfos={setItemInfos} />
+                <SelectUnit item={item} itemInfos={itemInfos} setItemInfos={setItemInfos} /> */}
             </StyledForm>
         </StyledItem>
     )
@@ -76,13 +76,13 @@ function defineBackground(status) {
 }
 
 const itemAnimations = {
-    hidden: { y: 20, opacity: 0, height: '0', },
-    visible: {
-        y: 0,
-        opacity: 1,
-        height: '40px',
-        overflow: 'hidden'
-    },
+    // hidden: { y: 20, opacity: 0, height: '0', },
+    // visible: {
+    //     y: 0,
+    //     opacity: 1,
+    //     height: '40px',
+    //     overflow: 'hidden'
+    // },
     animate: {
         y: 0,
         opacity: 1,
@@ -120,6 +120,7 @@ const StyledItem = styled(Reorder.Item)`
 `
 
 const StyledForm = styled(motion.form)`
+    width: 100%;
     display: grid;
     grid-template-areas: 
         "a b c c c c c c c c d e e ff" 
