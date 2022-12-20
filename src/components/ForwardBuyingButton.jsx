@@ -67,7 +67,7 @@ const exitEffect = {
   overflow: 'hidden',
   padding: '0px',
   transition: {
-    duration: 1,
+    duration: 0.8,
     ease: "easeInOut",
     times: [0, 0.3, 0.6],
   }

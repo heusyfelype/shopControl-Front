@@ -18,50 +18,55 @@ import SelectUnit from './SelectUnit';
 let timeId = null;
 
 export const EachItem = React.forwardRef(function EachItem({ item, saveReordered, setItems, identificador, isLastChild }, ref) {
-    const [resize, setResize] = useState('removeHeight');
-    const [statusCheck, setStatusCheck] = useState(item.statusText);
+    // const [resize, setResize] = useState('removeHeight');
+    // const [statusCheck, setStatusCheck] = useState(item.statusText);
     // const [itemInfos, setItemInfos] = useState({ ...item })
-    const backgroundgradient = defineBackground(statusCheck);
+    // const backgroundgradient = defineBackground(statusCheck);
     // const token = localStorage.getItem(process.env.REACT_APP_USR_DATA);
+    const y = useMotionValue(0)
     return (
-        <StyledItem
-            backgroundgradient={backgroundgradient}
-            value={item}
-            onDragEnd={saveReordered}
-            variants={itemAnimations}
-            animate={() => {
-                if (ref.current) {
-                    return false
-                };
-                return resize
-            }}
-            onFocus={(e) => {
-                setResize('animate');
-            }}
-            onBlur={(e) => {
-                setResize('removeHeight')
-                // updateItem(token, itemInfos).then(() => {
-                //     // getItems(token).then((res) => {
-                //     //     setItems([...res.data.items])
-                //     // })
-                // }).catch(HandleErrors)
-            }}
-
-            // whileTap={{ scaleY: 1.1 }}
-        >
-            <StyledForm  >
-                <Icon className='icon-three-dots' icon="bi:three-dots-vertical" />
-                <CheckBoxItem item={item} statusCheck={statusCheck} setStatusCheck={setStatusCheck} />
-                {/* <CheckBoxItem item={item} itemInfos={itemInfos} setItemInfos={setItemInfos} /> */}
-                <InputNameText item={item} isLastChild={isLastChild} ref={ref}/>
-                {/* <InputQtt item={item} itemInfos={itemInfos} setItemInfos={setItemInfos} />
-                <InputPrice item={item} itemInfos={itemInfos} setItemInfos={setItemInfos} />
-                <ExcludeItem item={item} setItems={setItems} />
-                <InputBrand item={item} itemInfos={itemInfos} setItemInfos={setItemInfos} />
-                <InputVol item={item} itemInfos={itemInfos} setItemInfos={setItemInfos} />
-                <SelectUnit item={item} itemInfos={itemInfos} setItemInfos={setItemInfos} /> */}
-            </StyledForm>
+        <StyledItem value={item} id={item} animate={false}>
+            {item}
         </StyledItem>
+        // <StyledItem
+        //     id={item.id}
+        //     backgroundgradient={backgroundgradient}
+        //     value={item}
+        //     onDragEnd={saveReordered}
+        //     variants={itemAnimations}
+        // // animate={() => {
+        // //     if (ref.current) {
+        // //         return false
+        // //     };
+        // //     return resize
+        // // }}
+        // // onFocus={(e) => {
+        // //     setResize('animate');
+        // // }}
+        // // onBlur={(e) => {
+        // //     setResize('removeHeight')
+        // // updateItem(token, itemInfos).then(() => {
+        // //     // getItems(token).then((res) => {
+        // //     //     setItems([...res.data.items])
+        // //     // })
+        // // }).catch(HandleErrors)
+        // // }}
+
+        // // whileTap={{ scaleY: 1.1 }}
+        // >
+        //     <StyledForm  >
+        //         <Icon className='icon-three-dots' icon="bi:three-dots-vertical" />
+        //         <CheckBoxItem item={item} statusCheck={statusCheck} setStatusCheck={setStatusCheck} />
+        //         {/* <CheckBoxItem item={item} itemInfos={itemInfos} setItemInfos={setItemInfos} /> */}
+        //         <InputNameText item={item} isLastChild={isLastChild} ref={ref} />
+        //         {/* <InputQtt item={item} itemInfos={itemInfos} setItemInfos={setItemInfos} />
+        //         <InputPrice item={item} itemInfos={itemInfos} setItemInfos={setItemInfos} />
+        //         <ExcludeItem item={item} setItems={setItems} />
+        //         <InputBrand item={item} itemInfos={itemInfos} setItemInfos={setItemInfos} />
+        //         <InputVol item={item} itemInfos={itemInfos} setItemInfos={setItemInfos} />
+        //         <SelectUnit item={item} itemInfos={itemInfos} setItemInfos={setItemInfos} /> */}
+        //     </StyledForm>
+        // </StyledItem>
     )
 }
 )
@@ -76,13 +81,13 @@ function defineBackground(status) {
 }
 
 const itemAnimations = {
-    // hidden: { y: 20, opacity: 0, height: '0', },
-    // visible: {
-    //     y: 0,
-    //     opacity: 1,
-    //     height: '40px',
-    //     overflow: 'hidden'
-    // },
+    hidden: { y: 20, opacity: .7, height: '0', },
+    visible: {
+        y: 0,
+        opacity: 1,
+        height: '40px',
+        overflow: 'hidden'
+    },
     animate: {
         y: 0,
         opacity: 1,
@@ -107,16 +112,10 @@ const StyledItem = styled(Reorder.Item)`
     width: 95%;
     margin: 0 auto;
     border-radius: 5px;
-    background: ${props => props.backgroundgradient};
     box-shadow:  5px 5px 5px #e4e4e4,
              -5px -5px 5px #fcfcfc;
     display: flex;
-    
-    padding: 5pt 3pt;
-    margin-bottom: 10px;
-    z-index: 0;
-    position: relative;
-    
+    padding: 5pt 3pt;    
 `
 
 const StyledForm = styled(motion.form)`
