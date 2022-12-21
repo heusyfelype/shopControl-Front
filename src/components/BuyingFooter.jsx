@@ -1,28 +1,36 @@
 import { Icon } from "@iconify/react";
+import { useCallback, useContext } from "react";
 import styled from "styled-components";
 import { getItems, updateAllItems, updateItem } from "../api/BackEndConnections";
+import ItemsContext from "../context/ItemsContext";
 import HandleErrors from "./HandleErrors";
 import InputSaveItem from "./InputSaveItem";
 
-export default function BuyingFooter({ items = [], setItems, setShowModal }) {
+export default function BuyingFooter({ setShowModal }) {
   const token = localStorage.getItem(process.env.REACT_APP_USR_DATA);
-  // const updateItemsList = [...items]
+  const { buyingInfos, setBuyingInfos } = useContext(ItemsContext)
+  const updateItemsList = [...buyingInfos.items]
 
   return (
     <StyledNav>
       <StyledIcon
         icon="material-symbols:add-shopping-cart-rounded"
-        onClick={() => {
-          // updateItemsList.push(newItemTemplate(items.length))
-          updateItem(token, newItemTemplate(items.length)).then(() => {
-            getItems(token).then(({ data }) => { setItems(data.items) })
-          }).catch(HandleErrors)
+        onClick={useCallback(() => {
+          updateItemsList.push(newItemTemplate(buyingInfos.items.length));
+
+          updateItem(token, newItemTemplate(buyingInfos.items.length))
+            .then(() => {
+              getItems(token).then(({ data }) => { 
+                console.log("ITEMS: ", data)
+                setBuyingInfos(data) })
+            })
+            .catch(HandleErrors);
           // setItems(updateItemsList)
-        }}
+        })}
       />
-      <FinishIcon onClick={(e) => {
+      <FinishIcon onClick={useCallback(() => {
         return setShowModal(true)
-      }}>
+      })}>
         <Icon icon="ic:twotone-save-alt" />
       </FinishIcon>
     </StyledNav>

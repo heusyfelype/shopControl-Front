@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { updateItem } from "../api/BackEndConnections";
 import { Icon } from "@iconify/react";
 import styled from "styled-components";
@@ -19,10 +19,10 @@ export default function CheckBoxItem({ item, statusCheck, setStatusCheck }) {
   return (
     <StyledBoxIcon
       whileTap={{ scale: 1.1 }}
-      onClick={() => {
+      onClick={useCallback(() => {
         changeStatus();
         //updateAPI()
-      }}>
+      })}>
       {checkBox[`${statusCheck}`]}
     </StyledBoxIcon>
   )
@@ -35,19 +35,6 @@ const StyledBoxIcon = styled(motion.div)`
     font-size: 24px;
   }
 `
-
-// const statusAnimation = {
-//   default: {
-//     color: 'gray',
-//   },
-//   bought: {
-//     color: 'green',
-//   },
-//   not_bought: {
-//     color: 'red',
-//   }
-
-// }
 
 const StyledIcon = styled(Icon)`
   color: ${props => props.color};

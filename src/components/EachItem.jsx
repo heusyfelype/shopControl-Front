@@ -1,8 +1,6 @@
 import { Icon } from '@iconify/react';
-import { motion, Reorder, useMotionValue } from 'framer-motion';
-import React from 'react';
-import { useEffect } from 'react';
-import { useRef, useState } from 'react';
+import { motion, Reorder, useAnimation, useMotionValue } from 'framer-motion';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { getItems, updateItem } from '../api/BackEndConnections';
 import CheckBoxItem from './CheckBoxItem';
@@ -17,56 +15,69 @@ import SelectUnit from './SelectUnit';
 
 let timeId = null;
 
-export const EachItem = React.forwardRef(function EachItem({ item, saveReordered, setItems, identificador, isLastChild }, ref) {
-    // const [resize, setResize] = useState('removeHeight');
-    // const [statusCheck, setStatusCheck] = useState(item.statusText);
-    // const [itemInfos, setItemInfos] = useState({ ...item })
-    // const backgroundgradient = defineBackground(statusCheck);
-    // const token = localStorage.getItem(process.env.REACT_APP_USR_DATA);
-    const y = useMotionValue(0)
-    return (
-        <StyledItem value={item} id={item} animate={false}>
-            {item}
-        </StyledItem>
-        // <StyledItem
-        //     id={item.id}
-        //     backgroundgradient={backgroundgradient}
-        //     value={item}
-        //     onDragEnd={saveReordered}
-        //     variants={itemAnimations}
-        // // animate={() => {
-        // //     if (ref.current) {
-        // //         return false
-        // //     };
-        // //     return resize
-        // // }}
-        // // onFocus={(e) => {
-        // //     setResize('animate');
-        // // }}
-        // // onBlur={(e) => {
-        // //     setResize('removeHeight')
-        // // updateItem(token, itemInfos).then(() => {
-        // //     // getItems(token).then((res) => {
-        // //     //     setItems([...res.data.items])
-        // //     // })
-        // // }).catch(HandleErrors)
-        // // }}
+export const EachItem = React.forwardRef(function EachItem({ item, saveReordered, setItems, isLastChild }, ref) {
+    const [statusCheck, setStatusCheck] = useState(item.statusText);
+    const [itemInfos, setItemInfos] = useState({ ...item })
+    const token = localStorage.getItem(process.env.REACT_APP_USR_DATA);
+    // const y = useMotionValue(0)
 
-        // // whileTap={{ scaleY: 1.1 }}
-        // >
-        //     <StyledForm  >
-        //         <Icon className='icon-three-dots' icon="bi:three-dots-vertical" />
-        //         <CheckBoxItem item={item} statusCheck={statusCheck} setStatusCheck={setStatusCheck} />
-        //         {/* <CheckBoxItem item={item} itemInfos={itemInfos} setItemInfos={setItemInfos} /> */}
-        //         <InputNameText item={item} isLastChild={isLastChild} ref={ref} />
-        //         {/* <InputQtt item={item} itemInfos={itemInfos} setItemInfos={setItemInfos} />
-        //         <InputPrice item={item} itemInfos={itemInfos} setItemInfos={setItemInfos} />
-        //         <ExcludeItem item={item} setItems={setItems} />
-        //         <InputBrand item={item} itemInfos={itemInfos} setItemInfos={setItemInfos} />
-        //         <InputVol item={item} itemInfos={itemInfos} setItemInfos={setItemInfos} />
-        //         <SelectUnit item={item} itemInfos={itemInfos} setItemInfos={setItemInfos} /> */}
-        //     </StyledForm>
-        // </StyledItem>
+    const itemAnimation = useAnimation()
+    useEffect(() => {
+        itemAnimation.start('visible')
+        // if (isLastChild) {
+        //     itemAnimation.start('animate')
+        // }
+    }, [])
+
+    useEffect(() => {
+        const background = defineBackground(statusCheck);
+        itemAnimation.start({ backgroundImage: background });
+
+    }, [statusCheck])
+
+    console.log("items: ", itemInfos)
+
+    const changeHeight = useCallback((e) => {
+        if (e.type === "focus") {
+            console.log("EVENT no if: ", e.type, itemAnimation)
+            return itemAnimation.start({height: 80})
+        }
+        return itemAnimation.start('removeHeight');
+    })
+
+    return (
+        <StyledItem
+            id={item.id}
+            // backgroundgradient={backgroundgradient}
+            value={item}
+            whileDrag={{ zIndex: 2 }}
+            onDragEnd={saveReordered}
+            variants={itemAnimations}
+            initial={'hidden'}
+            animate={itemAnimation}
+            onFocus={changeHeight}
+            onBlur={changeHeight}
+            // updateItem(token, itemInfos).then(() => {
+            //     // getItems(token).then((res) => {
+            //     //     setItems([...res.data.items])
+            //     // })
+            // }).catch(HandleErrors)
+            // }}
+
+            whileTap={{ scaleY: 1.1 }}
+        >
+            <StyledForm  >
+                <Icon className='icon-three-dots' icon="bi:three-dots-vertical" />
+                <CheckBoxItem item={item} statusCheck={statusCheck} setStatusCheck={setStatusCheck} />
+                <InputNameText item={item} isLastChild={isLastChild} ref={ref} />
+                <InputQtt item={item} itemInfos={itemInfos} setItemInfos={setItemInfos} />
+                <InputPrice item={item} itemInfos={itemInfos} setItemInfos={setItemInfos} />
+                <ExcludeItem item={item} setItems={setItems} />
+                <InputBrand item={item} itemInfos={itemInfos} setItemInfos={setItemInfos} />
+                <InputVol item={item} itemInfos={itemInfos} setItemInfos={setItemInfos} />
+                <SelectUnit item={item} itemInfos={itemInfos} setItemInfos={setItemInfos} />
+            </StyledForm>
+        </StyledItem>
     )
 }
 )
@@ -81,20 +92,21 @@ function defineBackground(status) {
 }
 
 const itemAnimations = {
-    hidden: { y: 20, opacity: .7, height: '0', },
+    hidden: { y: 20, opacity: 0, height: '0', },
     visible: {
         y: 0,
         opacity: 1,
         height: '40px',
-        overflow: 'hidden'
+        overflow: 'hidden',
+        transition: { duration: 0.5, ease: "easeOut", delay: 0.5 }
     },
     animate: {
         y: 0,
         opacity: 1,
-        height: '80px',
-        transition: {
-            delay: 0
-        }
+        height: 80,
+        // transition: {
+        //     delay: 1
+        // }
     },
     removeHeight: {
         y: 0,
@@ -109,13 +121,15 @@ const itemAnimations = {
 
 
 const StyledItem = styled(Reorder.Item)`
-    width: 95%;
-    margin: 0 auto;
+    width: 100%;
+    margin: 8px auto 8px auto;
     border-radius: 5px;
     box-shadow:  5px 5px 5px #e4e4e4,
              -5px -5px 5px #fcfcfc;
     display: flex;
-    padding: 5pt 3pt;    
+    padding: 5pt 3pt;
+    background-image: linear-gradient(145deg, #f5f5f5, #d8d8d8);
+    z-index: 0;
 `
 
 const StyledForm = styled(motion.form)`

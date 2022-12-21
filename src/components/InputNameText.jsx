@@ -1,14 +1,16 @@
 import React from "react"
+import { useEffect } from "react"
+import { useRef } from "react"
 import { useState } from "react"
 import styled from "styled-components"
 
-export const InputNameText = React.forwardRef(function InputNameText({ item, isLastChild}, ref) {
+export const InputNameText = React.forwardRef(function InputNameText({ item, isLastChild }, ref) {
   const [nameText, setNameText] = useState(item.nameText)
 
   if (isLastChild) {
     ref.current = false
   }
-  
+
   return isLastChild ? <StyledInput
     type="text"
     value={nameText}

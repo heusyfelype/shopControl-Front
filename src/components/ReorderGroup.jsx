@@ -1,13 +1,22 @@
 import { Reorder } from "framer-motion";
+import { useEffect } from "react";
+import { useContext } from "react";
 import { useCallback, useRef, useState } from "react";
 import styled from "styled-components";
+import ItemsContext from "../context/ItemsContext";
+import { EachItem } from "./EachItem";
 import EachItemTest from "./EachItemTest";
 
 const initialItems = ["🍅 Tomato", "🥒 Cucumber", "🧀 Cheese", "🥬 Lettuce"];
 
 export default function ReorderGroup() {
 
-  const [items, setItems] = useState(initialItems);
+  const { buyingInfos } = useContext(ItemsContext);
+  const [items, setItems] = useState();
+
+  useEffect(() => {
+    setItems([...buyingInfos.items])
+  }, [buyingInfos])
 
   const isLastChild = true
   const isFirstRendering = useRef(true)
@@ -18,33 +27,49 @@ export default function ReorderGroup() {
   }, [])
 
 
-  return (
-    <StyledReorderGroup
+  return (<>
+    {(items && <StyledReorderGroup
       axis="y"
       onReorder={setItems}
       values={items}
-      layoutScroll={true}
-      animate={true}
+      layoutScroll
+      variants={container}
+      initial={'hidden'}
+      animate={'visible'}
     >
       {items.map((item, index) => {
-        return <EachItemTest
-          key={item}
+        return <EachItem
+          key={item.id}
           item={item}
-          // ref={isFirstRendering}
-          // setItems={setItems}
+          ref={isFirstRendering}
+          setItems={setItems}
           saveReordered={saveReordered}
-          identificador={item.id}
           isLastChild={index === items.length - 1 ? isLastChild : !isLastChild}
         />
       })}
-    </StyledReorderGroup>
+    </StyledReorderGroup>) || <></>}
+  </>
 
   )
 }
 
 const StyledReorderGroup = styled(Reorder.Group)`
-    max-height: 75vh;
+    height: 75vh;
     overflow-y: scroll;
-    border: 3px solid black;
     position: relative;
 `
+
+const container = {
+  hidden: { height: '0', display: 'none' },
+  visible: {
+    display: 'block',
+    height: '75vh',
+    overflowY: 'scroll',
+    transition: {
+      default: { duration: 0.05 },
+      // delayChildren: 0.75,
+      staggerChildren: 0.03,
+      // delay: 1
+    }
+  }
+}

@@ -7,18 +7,18 @@ import Header from "./Header";
 import { EachItem } from "../components/EachItem";
 import BuyingFooter from "../components/BuyingFooter";
 import styled from "styled-components";
-// import ItemsContext from "../context/ItemsContext";
+import ItemsContext from "../context/ItemsContext";
 import InputSaveItem from "../components/InputSaveItem";
 import EachItemTest from "../components/EachItemTest";
 import ReorderGroup from "../components/ReorderGroup";
 
 
 export default function Buying() {
-    // const [showModal, setShowModal] = useState(false)
+    const [showModal, setShowModal] = useState(false)
     const token = localStorage.getItem(process.env.REACT_APP_USR_DATA);
     const [buyingInfos, setBuyingInfos] = useState()
     useEffect(() => {
-        getItems(token).then(({ data }) => setBuyingInfos(data)).catch(HandleErrors);
+        getItems(token).then(({ data }) => setBuyingInfos({ ...data })).catch(HandleErrors);
     }, [token])
 
     const enterScreen = useAnimation()
@@ -31,23 +31,22 @@ export default function Buying() {
 
     return (
         <StyledMain>
-            <Header />
+            <ItemsContext.Provider value={{ buyingInfos, setBuyingInfos }}>
+                <Header />
 
-            <StyledBox
-                variants={styledBoxAnimation}
-                initial={'hidden'}
-                animate={enterScreen}
-                exit={'exit'}
-            >
+                <StyledBox
+                    variants={styledBoxAnimation}
+                    initial={'hidden'}
+                    animate={enterScreen}
+                    exit={'exit'}
+                >
 
-                {/* <ItemsContext.Provider value={{ items, setItems }}> */}
-                <ReorderGroup />
+                    {buyingInfos && <ReorderGroup />}
+                </StyledBox>
 
-                {/* </ItemsContext.Provider> */}
-            </StyledBox>
-
-            {/* <BuyingFooter items={items} setItems={setItems} setShowModal={setShowModal}  /> */}
-            {/* {showModal ? <InputSaveItem items={items} setShowModal={setShowModal} /> : ""} */}
+                {buyingInfos && <BuyingFooter setShowModal={setShowModal} />}
+                {showModal && <InputSaveItem setShowModal={setShowModal} />}
+            </ItemsContext.Provider>
         </StyledMain >
     );
 }
@@ -65,11 +64,10 @@ const StyledBox = styled(motion.div)`
         background-image: linear-gradient(to right top, #f6fffa, #f5fff7, #f5fff4, #f7fff0, #f9ffec);    
         width: 100%;
         max-width: 680px;
-        padding: 5vh 25px 0px 25px;
+        padding: 5vh 4vw 0px 4vw;
         border-radius: 25px 25px 0px 0px;
 `
 
-console.log("window.heigth",)
 
 const styledBoxAnimation = {
     hidden: { height: 0, y: window.innerHeight },
@@ -83,19 +81,6 @@ const styledBoxAnimation = {
     exit: { y: window.innerHeight, height: 0 }
 }
 
-const container = {
-    hidden: { height: '0', display: 'none' },
-    visible: {
-        display: 'block',
-        height: '75vh',
-        overflowY: 'scroll',
-        transition: {
-            default: { duration: 0.5 },
-            delayChildren: 0.3,
-            staggerChildren: 0.05,
-            // delay: 1
-        }
-    }
-}
+
 
 
