@@ -1,5 +1,5 @@
 import { Icon } from '@iconify/react';
-import { motion, Reorder, useAnimation, useMotionValue } from 'framer-motion';
+import { motion, Reorder, useAnimation, useAnimationControls, useMotionValue } from 'framer-motion';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { getItems, updateItem } from '../api/BackEndConnections';
@@ -21,12 +21,9 @@ export const EachItem = React.forwardRef(function EachItem({ item, saveReordered
     const token = localStorage.getItem(process.env.REACT_APP_USR_DATA);
     // const y = useMotionValue(0)
 
-    const itemAnimation = useAnimation()
+    const itemAnimation = useAnimationControls()
     useEffect(() => {
         itemAnimation.start('visible')
-        // if (isLastChild) {
-        //     itemAnimation.start('animate')
-        // }
     }, [])
 
     useEffect(() => {
@@ -40,10 +37,18 @@ export const EachItem = React.forwardRef(function EachItem({ item, saveReordered
     const changeHeight = useCallback((e) => {
         if (e.type === "focus") {
             console.log("EVENT no if: ", e.type, itemAnimation)
-            return itemAnimation.start({height: 80})
+            return setTimeout(() => {
+                itemAnimation.start({ height: 80 })
+            }, 200);
         }
         return itemAnimation.start('removeHeight');
     })
+
+    // useEffect(() => {
+    //     if (isLastChild && ref.current) {
+    //         itemAnimation.start('animate')
+    //     }
+    // }, [ref.current])
 
     return (
         <StyledItem
@@ -130,6 +135,10 @@ const StyledItem = styled(Reorder.Item)`
     padding: 5pt 3pt;
     background-image: linear-gradient(145deg, #f5f5f5, #d8d8d8);
     z-index: 0;
+
+    :last-child{
+        margin-bottom: 30vh;
+    }
 `
 
 const StyledForm = styled(motion.form)`
